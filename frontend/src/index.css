@@ -1,111 +1,109 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+/* =========================================================================
+   Teknopanorama — tema (koyu yesil / mat)
+   Renkler tek yerden: CSS degiskenleri. Sonra kolayca ayarlanir.
+   ========================================================================= */
+:root{
+  --bg:#0b1210;
+  --panel:#121b16;
+  --panel-2:#16211a;
+  --border:#212e26;
+  --border-hover:#30463a;
+  --text:#dce5e0;
+  --muted:#8a9a91;
+  --faint:#637469;
+  --green:#3fa06b;
+  --green-soft:#58b982;
+  --green-deep:#1d6b45;
+  --green-dim:#16281e;
+  --red:#ff5a5a;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --wrap:1040px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+*{box-sizing:border-box;margin:0;padding:0}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
 }
 
-body {
-  margin: 0;
-}
+.mono{font-family:'JetBrains Mono',monospace}
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
+/* ortak genislik kapsayici */
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
+a{color:inherit;text-decoration:none}
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
+/* ---- navbar ---- */
+.nav-bar{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--border);
+  background:rgba(11,18,16,0.88);backdrop-filter:blur(8px)}
+.nav-inner{height:64px;display:flex;align-items:center;gap:30px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:18px;letter-spacing:-0.01em;color:var(--text)}
+.logo .mark{width:11px;height:11px;border-radius:3px;background:var(--green)}
+.nav-links{display:flex;gap:24px;font-size:14px}
+.nav-links a{color:var(--muted);padding:4px 0;border-bottom:2px solid transparent;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--text);border-bottom-color:var(--green)}
+.nav-search{margin-left:auto;position:relative}
+.nav-search input{background:var(--panel);border:1px solid var(--border);color:var(--text);
+  border-radius:9px;padding:9px 12px 9px 34px;font-size:14px;width:230px;outline:none;transition:border-color .15s}
+.nav-search input::placeholder{color:var(--faint)}
+.nav-search input:focus{border-color:var(--green-deep)}
+.nav-search .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:15px;pointer-events:none}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
+/* ---- hero ---- */
+.hero{padding:58px 0 38px}
+.hero .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:16px;font-weight:500}
+.hero h1{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-0.025em;max-width:780px}
+.hero p{margin-top:20px;color:var(--muted);font-size:17px;max-width:580px}
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
+/* ---- bolum etiketi ---- */
+.sec-label{display:flex;align-items:center;gap:14px;margin:12px 0 22px}
+.sec-label span{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.sec-label .line{flex:1;height:1px;background:var(--border)}
+
+/* ---- kart izgarasi ---- */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-bottom:42px}
+@media (max-width:860px){.card-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.card-grid{grid-template-columns:1fr}}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  transition:border-color .15s,transform .15s;display:block}
+.card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.card .thumb{height:120px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:14px}
+.thumb.t1{background:#12231a}
+.thumb.t2{background:#141f12}
+.thumb.t3{background:#102021}
+.thumb.t4{background:#1d1711}
+.thumb.t5{background:#1a121c}
+.thumb.t6{background:#111526}
+.chip{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;
+  padding:4px 10px;border-radius:7px;background:var(--green-dim);color:var(--green-soft);border:1px solid var(--green-deep)}
+.card .cbody{padding:17px 18px}
+.card .cbody h3{font-size:17px;font-weight:600;line-height:1.32;color:var(--text)}
+.card .cbody p{margin-top:9px;color:var(--muted);font-size:13.5px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{margin-top:15px;font-size:12px;color:var(--faint);display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---- yazi (detay) sayfasi ---- */
+.article{max-width:720px;margin:0 auto}
+.article .back{font-size:14px;color:var(--muted)}
+.article .back:hover{color:var(--green-soft)}
+.article h1{font-size:34px;line-height:1.15;font-weight:700;letter-spacing:-0.02em;margin-top:22px}
+.article .byline{margin-top:14px;font-size:13px;color:var(--faint);display:flex;gap:8px;flex-wrap:wrap}
+.article .content{margin-top:30px;display:flex;flex-direction:column;gap:18px;font-size:16.5px;color:#cdd8d1}
+
+/* ---- footer ---- */
+.site-footer{border-top:1px solid var(--border);margin-top:20px}
+.site-footer .inner{padding:28px 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--faint)}
+.site-footer a{color:var(--muted)}
+.site-footer a:hover{color:var(--green-soft)}
+
+/* ---- durum metinleri ---- */
+.state{color:var(--muted);padding:20px 0}
+.state.error{color:var(--red)}
