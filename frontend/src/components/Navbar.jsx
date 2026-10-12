@@ -1,26 +1,43 @@
-// Sunum bileseni (tasarim). Arama kutusu ve linkler simdilik gorsel;
-// yonlendirme (routing) ekledigimizde <a> yerine <Link> baglayacagiz.
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+
+// Sunum bileseni. Arama kutusu artik calisiyor: yazip Enter'layinca
+// /search?q=... sayfasina yonlendirir (useNavigate).
 function Navbar() {
+  const [q, setQ] = useState('')
+  const navigate = useNavigate()
+
+  function onSubmit(e) {
+    e.preventDefault()                 // formun sayfayi yenilemesini engelle
+    const term = q.trim()
+    if (term) navigate(`/search?q=${encodeURIComponent(term)}`)
+  }
+
   return (
     <header className="nav-bar">
       <div className="wrap">
         <nav className="nav-inner">
-          <a href="/" className="logo">
+          <Link to="/" className="logo">
             <span className="mark" />
             Teknopanorama
-          </a>
+          </Link>
 
           <div className="nav-links">
-            <a href="/" className="active">Gündem</a>
-            <a href="/">Yapay Zeka</a>
-            <a href="/">Güvenlik</a>
-            <a href="/">Enerji</a>
+            <Link to="/" className="active">Gündem</Link>
+            <Link to="/">Yapay Zeka</Link>
+            <Link to="/">Güvenlik</Link>
+            <Link to="/">Enerji</Link>
           </div>
 
-          <div className="nav-search">
+          <form className="nav-search" onSubmit={onSubmit}>
             <span className="ic">⌕</span>
-            <input type="text" placeholder="Haberlerde ara..." />
-          </div>
+            <input
+              type="text"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Haberlerde ara..."
+            />
+          </form>
         </nav>
       </div>
     </header>
