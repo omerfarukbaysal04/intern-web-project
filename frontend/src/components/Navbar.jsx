@@ -1,18 +1,9 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-// Sunum bileseni. Arama kutusu artik calisiyor: yazip Enter'layinca
-// /search?q=... sayfasina yonlendirir (useNavigate).
+// Arama kutusu klasik bir GET formu: Enter'layinca tarayici /search?q=...
+// adresine tam sayfa gider. Bu adres Vite proxy ile backend'e (sunucu-render'li
+// arama sayfasi) yonlendirilir. Siradan bir sitede aramanin calismasi aynen boyledir.
 function Navbar() {
-  const [q, setQ] = useState('')
-  const navigate = useNavigate()
-
-  function onSubmit(e) {
-    e.preventDefault()                 // formun sayfayi yenilemesini engelle
-    const term = q.trim()
-    if (term) navigate(`/search?q=${encodeURIComponent(term)}`)
-  }
-
   return (
     <header className="nav-bar">
       <div className="wrap">
@@ -29,14 +20,9 @@ function Navbar() {
             <Link to="/">Enerji</Link>
           </div>
 
-          <form className="nav-search" onSubmit={onSubmit}>
+          <form className="nav-search" method="get" action="/search">
             <span className="ic">⌕</span>
-            <input
-              type="text"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Haberlerde ara..."
-            />
+            <input type="text" name="q" placeholder="Haberlerde ara..." />
           </form>
         </nav>
       </div>
