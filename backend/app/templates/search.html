@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Arama · Teknopanorama{% endblock %}
+
+{% block head %}
+<style>
+  .xss-flash{position:fixed;inset:0;background:#ff1e1e;z-index:99998;pointer-events:none;opacity:0;animation:xssflash 1.3s ease-out forwards}
+  @keyframes xssflash{0%{opacity:0}10%{opacity:.7}26%{opacity:.12}42%{opacity:.5}100%{opacity:0}}
+  .xss-bg{position:fixed;inset:0;background:rgba(5,8,7,.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;animation:xssfade .25s ease-out}
+  @keyframes xssfade{from{opacity:0}to{opacity:1}}
+  .xss-card{max-width:560px;width:100%;background:#121b16;border:1px solid #3a1414;border-top:4px solid #ff4d4d;border-radius:14px;padding:26px 30px}
+  .xss-card h2{color:#ff6b6b;font-size:22px;margin:0 0 12px}
+  .xss-card h3{color:#dce5e0;font-size:15px;margin:18px 0 6px}
+  .xss-card p{color:#aab8b0;font-size:14px;margin:0}
+  .xss-card b{color:#cdd8d1}
+  .xss-card code{background:#0b1210;padding:2px 6px;border-radius:5px;color:#58b982;font-size:13px}
+  .xss-card .close{margin-top:22px;background:#1d6b45;color:#eafff3;border:none;padding:10px 18px;border-radius:9px;font-size:14px;cursor:pointer}
+  .xss-card .close:hover{background:#238a57}
+</style>
+<script>
+window.caught = function () {
+  if (window.__xss) return;
+  window.__xss = true;
+  var f = document.createElement("div");
+  f.className = "xss-flash";
+  document.body.appendChild(f);
+  setTimeout(function () { f.remove(); }, 1300);
+  setTimeout(function () {
+    var bg = document.createElement("div");
+    bg.className = "xss-bg";
+    bg.innerHTML = `
+      <div class="xss-card">
+        <h2>&#9888; Az önce hacklendin!</h2>
+        <p>Bu sayfada bir <b>Reflected XSS</b> açığı var ve sen de tetikledin.</p>
+        <h3>Ne oldu?</h3>
+        <p>Arama terimin (bu linkteki metin) sunucu tarafından hiç temizlenmeden sayfaya basıldı. İçindeki <code>&lt;script&gt;</code> kodu senin tarayıcında, bu sitenin adına çalıştı.</p>
+        <h3>Gerçek bir saldırgan ne yapardı?</h3>
+        <p>Oturum çerezini çalıp hesabına girebilir, senin adına işlem yapabilir ya da sahte bir giriş formu gösterip parolanı toplayabilirdi. Biz zarar vermek yerine sadece bu uyarıyı gösterdik.</p>
+        <h3>Nasıl korunulur?</h3>
+        <p>Kullanıcı girdisi ekrana basılmadan önce <b>escape</b> edilmeli (<code>&lt;</code> &rarr; <code>&amp;lt;</code>). React bunu otomatik yapar; sunucuda <code>html.escape()</code> ile yapılır. Bu sitede "güvenli mod" açıkken tam da bu devrededir.</p>
+        <button class="close" onclick="this.closest('.xss-bg').remove()">Anladım, kapat</button>
+      </div>`;
+    document.body.appendChild(bg);
+  }, 400);
+};
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1 class="res">"<span class="q">{{ goster | safe }}</span>" için sonuçlar</h1>
+  <div class="sub">{{ sonuclar | length }} sonuç bulundu</div>
+  <div class="grid">
+    {% for p in sonuclar %}
+    <a class="card" href="/post/{{ p.slug }}">
+      <div class="thumb {{ p.tone }}"><span class="chip">{{ p.category }}</span></div>
+      <div class="cbody">
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.excerpt }}</p>
+        <div class="meta">{{ p.author }} · {{ p.date }} · {{ p.read_minutes }} dk</div>
+      </div>
+    </a>
+    {% else %}
+    <p class="empty">Aramanıza uygun sonuç bulunamadı.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% if saldiri %}<script>caught()</script>{% endif %}
+{% endblock %}

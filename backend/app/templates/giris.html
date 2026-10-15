@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş · Teknopanorama{% endblock %}
+
+{% block head %}
+<style>
+  .login{max-width:380px;margin:60px auto;padding:0 24px}
+  .login h1{font-size:26px;font-weight:700;margin-bottom:6px}
+  .login .muted{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .login form{display:flex;flex-direction:column;gap:12px}
+  .login input{background:var(--panel);border:1px solid var(--border);color:var(--text);
+    border-radius:9px;padding:11px 14px;font-size:14px;outline:none}
+  .login input:focus{border-color:var(--green-deep)}
+  .login button{background:var(--green-deep);color:#eafff3;border:none;padding:12px;border-radius:9px;
+    font-size:15px;font-weight:500;cursor:pointer;margin-top:4px}
+  .login button:hover{background:#238a57}
+  .login .err{background:#160a0a;border:1px solid #3a1414;color:#ff8a8a;font-size:13px;
+    padding:10px 14px;border-radius:9px;margin-bottom:16px}
+  .login .hint{margin-top:18px;color:var(--faint);font-size:12px;text-align:center}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login">
+  <h1>Giriş Yap</h1>
+  <p class="muted">Hesabına erişmek için giriş yap.</p>
+
+  {% if hata %}<div class="err">{{ hata }}</div>{% endif %}
+
+  <form method="post" action="/giris">
+    <input name="kullanici" placeholder="Kullanıcı adı" autofocus>
+    <input name="parola" type="password" placeholder="Parola">
+    <button type="submit">Giriş Yap</button>
+  </form>
+
+  <p class="hint">Demo hesabı: omerfaruk / 1234</p>
+</div>
+{% endblock %}
