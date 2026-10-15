@@ -14,6 +14,12 @@ from app.data.users import USERS
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent/"templates"))
 app = FastAPI()
 
+def kullanici_oturum(request: Request):
+     kullanici=request.cookies.get("oturum")
+     if kullanici and kullanici in USERS:
+          return kullanici
+     return None
+
 @app.get("/api/posts")
 def get_posts():
     return {"items" : POSTS}
@@ -39,14 +45,17 @@ def search_page(request: Request, q: str=""):
     
 @app.get("/hesap", response_class=HTMLResponse)
 def hesap(request: Request):
-    kullanici=request.cookies.get("oturum")
-    if not kullanici or kullanici not in USERS:
-        return RedirectResponse(url="/giris",status_code=303)
-    return templates.TemplateResponse("hesap.html",{
+    kullanici=kullanici_oturum(request)
+    if not kullanici:
+         return RedirectResponse(url="/giris",status_code=303)
+    resp = templates.TemplateResponse("hesap.html",{
         "request":request,
         "kullanici": kullanici,
         "user": USERS[kullanici],
         })
+    if SAFE_MODE:
+        resp.headers["X-Frame-Options"]="DENY"
+    return resp
 
 @app.get("/giris",response_class=HTMLResponse)
 def giris(request : Request):
@@ -66,21 +75,35 @@ def giris_yap(request: Request, kullanici: str=Form(),parola: str=Form()):
 
 @app.post("/hesap/email")
 def email_guncelle(request:Request, email:str=Form()):
-    kullanici=request.cookies.get("oturum")
-    if not kullanici or kullanici not in USERS:
-            return RedirectResponse(url="/giris",status_code=303)
+    kullanici=kullanici_oturum(request)
+    if not kullanici:
+        return RedirectResponse(url="/giris",status_code=303)
     USERS[kullanici]["email"]=email
     return RedirectResponse(url="/hesap",status_code=303)
 
 @app.post("/hesap/sil")
 def hesap_sil(request:Request):
-    kullanici=request.cookies.get("oturum")
-    if not kullanici or kullanici not in USERS:
-            return RedirectResponse(url="/giris",status_code=303)
+    kullanici=kullanici_oturum(request)
+    if not kullanici:
+        return RedirectResponse(url="/giris",status_code=303)
     USERS.pop(kullanici,None) #kullanıcıyı sil
-    resp=RedirectResponse(url="/giris",status_code=303)
+    resp = templates.TemplateResponse("silindi.html", {"request":request})
     resp.delete_cookie("oturum")
     return resp
+
+@app.get("/cikis")
+def cikis():
+    resp = RedirectResponse(url="/", status_code=303)
+    resp.delete_cookie("oturum")
+    return resp
+
+@app.get("/saldirgan", response_class=HTMLResponse)
+def saldirgan(request:Request):
+    return templates.TemplateResponse("saldirgan.html", {"request":request})
+
+@app.get("/clickjack-ders", response_class=HTMLResponse)
+def clickjack_ders(request:Request):
+    return templates.TemplateResponse("clickjack_ders.html",{"request":request})
 
     
 

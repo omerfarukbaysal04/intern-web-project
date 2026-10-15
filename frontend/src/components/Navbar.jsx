@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom'
 
-// Arama kutusu klasik bir GET formu: Enter'layinca tarayici /search?q=...
-// adresine tam sayfa gider. Bu adres Vite proxy ile backend'e (sunucu-render'li
-// arama sayfasi) yonlendirilir. Siradan bir sitede aramanin calismasi aynen boyledir.
+function getOturum(){
+  const m= document.cookie.match(/(?:^|;\s*)oturum=([^;]+)/)
+  return m ? decodeURIComponent(m[1]):null  
+}
+
+
 function Navbar() {
+  const oturum =getOturum()
   return (
     <header className="nav-bar">
       <div className="wrap">
@@ -24,6 +28,17 @@ function Navbar() {
             <span className="ic">⌕</span>
             <input type="text" name="q" placeholder="Haberlerde ara..." />
           </form>
+          <div className="nav-auth">
+            {oturum ? (
+              <>
+                <span className="hi">Merhaba, {oturum}</span>
+                <a href="/hesap">Hesabım</a>
+                <a href="/cikis">Çıkış</a>
+              </>
+            ) : (
+              <a href="/giris">Giriş Yap</a>
+            )}
+          </div>
         </nav>
       </div>
     </header>

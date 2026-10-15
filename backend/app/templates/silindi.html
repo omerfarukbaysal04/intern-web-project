@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>İşlem tamamlandı</title>
+  <style>
+    body{background:#0b1210;color:#8a9a91;font-family:system-ui,sans-serif;
+      display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+  </style>
+</head>
+<body>
+  <p>Hesabınız silindi...</p>
+  <script>
+    if (window.top !== window.self) {
+        window.top.location.href = "/clickjack-ders";
+      } else {
+        window.location.href = "/giris";
+      }
+  </script>
+</body>
+</html>

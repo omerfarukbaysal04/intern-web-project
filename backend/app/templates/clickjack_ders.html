@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clickjack'lendin · Teknopanorama</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:#0b1210;color:#dce5e0;
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6;
+      display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{max-width:600px;width:100%;background:#121b16;border:1px solid #3a1414;
+      border-top:4px solid #ff4d4d;border-radius:16px;padding:32px 36px}
+    .card h1{color:#ff6b6b;font-size:26px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+    .card h3{color:#dce5e0;font-size:16px;margin:22px 0 6px}
+    .card p{color:#aab8b0;font-size:15px}
+    .card b{color:#cdd8d1}
+    .card code{background:#0b1210;padding:2px 7px;border-radius:5px;color:#58b982;font-size:13.5px}
+    .card .back{display:inline-block;margin-top:28px;background:#1d6b45;color:#eafff3;
+      text-decoration:none;padding:11px 22px;border-radius:9px;font-size:15px}
+    .card .back:hover{background:#238a57}
+    .flash{position:fixed;inset:0;background:#ff1e1e;z-index:9999;pointer-events:none;opacity:0;animation:flash 1.3s ease-out forwards}
+    @keyframes flash{0%{opacity:0}10%{opacity:.7}26%{opacity:.12}42%{opacity:.5}100%{opacity:0}}
+  </style>
+</head>
+<body>
+  <div class="flash"></div>
+  <div class="card">
+    <h1>&#9888; Clickjack'lendin!</h1>
+    <p>Az önce "Ödülümü Al" butonuna tıkladığını sandın — ama aslında Teknopanorama'daki <b>"Hesabımı Sil"</b> butonuna bastın ve hesabın silindi.</p>
+
+    <h3>Nasıl oldu?</h3>
+    <p>Ziyaret ettiğin kötü sayfa, Teknopanorama'nın hesap sayfasını <b>görünmez bir iframe</b> içine koyup tam yemin üstüne hizalamıştı. Sen parlak butona bastığını sanırken, tıklaman arkadaki gerçek butona gitti. Hiçbir şey yazmadın, sadece tıkladın.</p>
+
+    <h3>Nasıl korunulur?</h3>
+    <p>Sitenin, sayfalarını <b>iframe'e girmekten yasaklaması</b> gerekir: <code>X-Frame-Options: DENY</code> ya da modern karşılığı <code>Content-Security-Policy: frame-ancestors 'none'</code> header'ı. O zaman tarayıcı sayfayı hiçbir iframe'de göstermez, bu saldırı en baştan çöker. (Bu sitede "güvenli mod" açıkken tam da bu devrededir.)</p>
+
+    <h3>Sen ne yapabilirsin?</h3>
+    <p>Tanımadığın sayfalardaki "ödül kazandın" gibi cazip butonlara dikkat et; önemli bir hesapta işlem yapmadan önce gerçekten o sitede olduğundan emin ol.</p>
+
+    <a class="back" href="/">Ana sayfaya dön</a>
+  </div>
+</body>
+</html>

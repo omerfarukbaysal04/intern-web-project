@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Post from './pages/Post'
+import AdPopup from './components/AdPopup'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path='/post/:slug' element={<Post />}/>
       </Routes>
       <Footer />
+      <AdPopup></AdPopup>
     </>
   )
 }
