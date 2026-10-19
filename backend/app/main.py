@@ -9,6 +9,7 @@ from pathlib import Path
 from fastapi import Form
 from fastapi.responses import RedirectResponse
 from app.data.users import USERS
+from app.data.comments import yorumlar, yorum_ekle
 
 
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent/"templates"))
@@ -105,5 +106,34 @@ def saldirgan(request:Request):
 def clickjack_ders(request:Request):
     return templates.TemplateResponse("clickjack_ders.html",{"request":request})
 
-    
+@app.get("/csrf-saldirgan", response_class=HTMLResponse)
+def csrf_saldirgan(request: Request):
+    return templates.TemplateResponse("csrf_saldirgan.html",{"request":request})
 
+@app.get("/api/yorumlar/{slug}")
+def get_yorumlar(slug:str):
+    return {"items":yorumlar(slug)}
+
+@app.post("/api/yorum")
+def post_yorum(request: Request, slug: str = Form(), metin: str = Form(), resim: str = Form(default="")):
+    yazar= kullanici_oturum(request) or "anonim"
+    yorum_ekle(slug,yazar,metin,resim)
+    return {"ok":True}
+
+@app.get("/hesap/email-degistir")
+def email_degistir_get(request:Request, email: str=""):
+    kullanici= kullanici_oturum(request)
+    if not kullanici:
+        return RedirectResponse(url="/giris",status_code=303)
+    if email:
+        USERS[kullanici]["email"] = email
+        USERS[kullanici]["csrf_uyari"] = True
+    return {"ok":True}
+
+@app.get("/api/csrf-uyari")
+def csrf_uyari(request: Request):
+    kullanici = kullanici_oturum(request)
+    uyari = bool(kullanici and USERS.get(kullanici, {}).get("csrf_uyari"))
+    if uyari:
+        USERS[kullanici]["csrf_uyari"] = False   # bir kez göster, sonra temizle
+    return {"uyari": uyari}

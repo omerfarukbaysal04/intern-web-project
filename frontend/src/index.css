@@ -129,3 +129,33 @@ a{color:inherit;text-decoration:none}
 .ad-popup .ad-cta{display:inline-block;margin-top:9px;background:#ffd93b;color:#3a2a00;font-weight:700;
   text-decoration:none;padding:7px 15px;border-radius:8px;font-size:13px;align-self:flex-start}
 .ad-popup .ad-cta:hover{background:#ffe066}
+
+/* ---- yorumlar ---- */
+.comments{max-width:720px;margin:10px auto 60px;padding:0 24px}
+.comments h2{font-size:20px;font-weight:600;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.comment{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.comment-head{font-size:13px;font-weight:600;color:var(--green-soft);margin-bottom:5px}
+.comment p{font-size:14px;color:#cdd8d1;margin:0}
+.comment-img{max-width:100%;border-radius:8px;margin-top:10px;display:block}
+.comment-form{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.comment-form textarea{background:var(--panel);border:1px solid var(--border);color:var(--text);
+  border-radius:10px;padding:11px 14px;font-size:14px;outline:none;resize:vertical;min-height:70px;font-family:inherit}
+.comment-form input{background:var(--panel);border:1px solid var(--border);color:var(--text);
+  border-radius:10px;padding:10px 14px;font-size:14px;outline:none}
+.comment-form textarea:focus,.comment-form input:focus{border-color:var(--green-deep)}
+.comment-form button{align-self:flex-start;background:var(--green-deep);color:#eafff3;border:none;
+  padding:10px 20px;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer}
+.comment-form button:hover{background:#238a57}
+
+/* ---- csrf farkindalik modali ---- */
+.csrf-flash{position:fixed;inset:0;background:#ff1e1e;z-index:99998;pointer-events:none;opacity:0;animation:csrfflash 1.3s ease-out forwards}
+@keyframes csrfflash{0%{opacity:0}10%{opacity:.7}26%{opacity:.12}42%{opacity:.5}100%{opacity:0}}
+.csrf-bg{position:fixed;inset:0;background:rgba(5,8,7,.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.csrf-card{max-width:580px;width:100%;background:var(--panel);border:1px solid #3a1414;border-top:4px solid #ff4d4d;border-radius:16px;padding:28px 32px}
+.csrf-card h2{color:#ff6b6b;font-size:22px;margin-bottom:12px}
+.csrf-card h3{font-size:15px;color:var(--text);margin:18px 0 6px}
+.csrf-card p{font-size:14px;color:#aab8b0;margin:0}
+.csrf-card b{color:#cdd8d1}
+.csrf-card code{background:var(--bg);padding:2px 6px;border-radius:5px;color:var(--green-soft);font-size:13px}
+.csrf-card button{margin-top:24px;background:var(--green-deep);color:#eafff3;border:none;padding:11px 22px;border-radius:9px;font-size:15px;cursor:pointer}
+.csrf-card button:hover{background:#238a57}

@@ -12,6 +12,7 @@ export default defineConfig({
       '/cikis': 'http://127.0.0.1:8000',  // cikis
       '/saldirgan': 'http://127.0.0.1:8000', // clickjacking demo saldirgan sayfasi
       '/clickjack-ders': 'http://127.0.0.1:8000', // clickjacking farkindalik dersi
+      '/csrf-saldirgan': 'http://127.0.0.1:8000', // csrf demo saldirgan sayfasi
     },
   },
 })
