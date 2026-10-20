@@ -112,7 +112,10 @@ def csrf_saldirgan(request: Request):
 
 @app.get("/api/yorumlar/{slug}")
 def get_yorumlar(slug:str):
-    return {"items":yorumlar(slug)}
+    items = yorumlar(slug)
+    if SAFE_MODE:
+        items = [{**c, "metin": html.escape(c["metin"])} for c in items]
+    return {"items":items}
 
 @app.post("/api/yorum")
 def post_yorum(request: Request, slug: str = Form(), metin: str = Form(), resim: str = Form(default="")):

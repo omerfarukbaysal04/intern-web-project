@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from 'react-router-dom'
 import CsrfModal from "../components/CsrfModal"
+import StoredXssModal from "../components/StoredXssModal"
 
 
 function Post(){
@@ -12,6 +13,8 @@ function Post(){
     const [metin, setMetin]=useState("")
     const [resim, setResim]=useState("")
     const [csrf, setCsrf] = useState(false)
+    const [xss, setXss] = useState(false)
+    const [calinanCerez, setCalinanCerez] = useState("")
 
       useEffect(() => {
         const t = setTimeout(() => {
@@ -21,6 +24,14 @@ function Post(){
         }, 1500)
         return () => clearTimeout(t)
       }, [slug])
+
+      useEffect(()=>{
+        window.xssYakala = (cerez) => {
+          setCalinanCerez(cerez)
+          setTimeout(()=> setXss(true),2500)
+        }
+        return () => {delete window.xssYakala}
+      },[])
 
           function loadYorumlar(){
         fetch(`/api/yorumlar/${slug}`)
@@ -73,7 +84,7 @@ function Post(){
       {yorumlar.map((c, i) => (
         <div key={i} className="comment">
           <div className="comment-head">{c.yazar}</div>
-          <p>{c.metin}</p>
+          <p dangerouslySetInnerHTML={{__html: c.metin}}></p>
           {c.resim && <img className="comment-img" src={c.resim} alt="" />}
         </div>
       ))}
@@ -85,6 +96,13 @@ function Post(){
       </form>
     </section>
     {csrf && <CsrfModal onClose={() => setCsrf(false)} />}
+    {xss && (
+      <StoredXssModal
+        cookie={calinanCerez}
+        kotuYorum={yorumlar.find(c => /<img|onerror|<script|<svg/i.test(c.metin))}
+        onClose={() => setXss(false)}
+      />
+    )}
     </article>
     
   )
