@@ -8,6 +8,14 @@ function StoredXssModal({ cookie, kotuYorum, onClose }) {
       <div className="csrf-bg">
         <div className="csrf-card">
           <h2>⚠ Stored XSS saldırısına uğradın!</h2>
+
+          <div className="aflow">
+            <div className="step"><span className="ic">💬</span><span>Bir yorumu okursun</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">🧬</span><span>İçindeki gizli kod çalışır</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">🍪</span><span>Oturum çerezin çalınır</span></div>
+          </div>
           <p>
             Bu haberdeki bir <b>yorum</b>, içine gizlenmiş kodu senin tarayıcında —
             bu sitenin adına — çalıştırdı. Sen sadece haberi okudun.

@@ -7,6 +7,16 @@ function CsrfModal({ onClose }) {
       <div className="csrf-bg">
         <div className="csrf-card">
           <h2>⚠ Az önce CSRF saldırısına uğradın!</h2>
+
+          <div className="aflow">
+            <div className="step"><span className="ic">👁️</span><span>Haberi okursun</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">🖼️</span><span>Yorumdaki sahte "görsel"</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">🍪</span><span>Çerezinle gizli istek gider</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">✉️</span><span>E-postan değişir</span></div>
+          </div>
           <p>
             Sadece bu haberi okudun — ama hesabının e-postası, senin haberin
             olmadan <b>saldırganınkiyle değiştirildi.</b>

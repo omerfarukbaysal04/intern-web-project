@@ -59,6 +59,7 @@ a{color:inherit;text-decoration:none}
 .nav-auth .hi{color:var(--muted)}
 .nav-auth a{color:var(--green-soft);transition:color .15s}
 .nav-auth a:hover{color:var(--text)}
+.nav-links a.nav-fk{color:var(--green-soft);white-space:nowrap}
 
 /* ---- hero ---- */
 .hero{padding:58px 0 38px}
@@ -173,3 +174,50 @@ a{color:inherit;text-decoration:none}
 .reklam-labelli .reklam-etiket{position:absolute;top:8px;right:12px;font-size:10px;
   text-transform:uppercase;letter-spacing:.08em;color:var(--faint);
   background:rgba(255,255,255,.06);padding:2px 7px;border-radius:5px}
+
+/* ---- farkindalik dashboard ---- */
+.fk-hero{padding:48px 0 30px;max-width:780px}
+.fk-hero .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);font-weight:500}
+.fk-hero h1{font-size:38px;line-height:1.12;font-weight:700;letter-spacing:-0.02em;margin:14px 0}
+.fk-hero p{color:var(--muted);font-size:16px}
+.fk-hero b{color:var(--text)}
+.fk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;padding-bottom:30px}
+@media(max-width:720px){.fk-grid{grid-template-columns:1fr}}
+.fk-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.fk-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.fk-ikon{font-size:30px;line-height:1}
+.fk-top h3{font-size:17px;font-weight:600}
+.fk-tur{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--green-soft);
+  background:var(--green-dim);border:1px solid var(--green-deep);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}
+.fk-card p{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.55}
+.fk-kurban b{color:#e8a0a0}
+.fk-korunma b{color:#58b982}
+.fk-not{color:var(--faint);font-size:13px;padding:8px 0 50px}
+.fk-not a{color:var(--green-soft)}
+
+/* ---- karsilama (intro) penceresi ---- */
+.intro-bg{position:fixed;inset:0;background:rgba(5,8,7,.8);z-index:200;display:flex;
+  align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);animation:introin .25s ease-out}
+@keyframes introin{from{opacity:0}to{opacity:1}}
+.intro-card{position:relative;max-width:480px;width:100%;background:var(--panel);border:1px solid var(--border);
+  border-top:4px solid var(--green);border-radius:16px;padding:34px;text-align:center}
+.intro-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:26px;cursor:pointer;line-height:1}
+.intro-close:hover{color:var(--text)}
+.intro-ikon{font-size:44px;margin-bottom:10px}
+.intro-card h2{font-size:22px;font-weight:700;margin-bottom:12px}
+.intro-card p{font-size:14.5px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.intro-card b{color:var(--text)}
+.intro-alt{font-size:13px;color:var(--faint)}
+.intro-btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.intro-devam{background:var(--green-deep);color:#eafff3;border:none;padding:12px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer}
+.intro-devam:hover{background:#238a57}
+.intro-detay{color:var(--green-soft);font-size:14px;text-decoration:none}
+.intro-detay:hover{color:var(--text)}
+
+/* ---- saldiri akis diyagrami (React modallar) ---- */
+.aflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 20px}
+.aflow .step{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;
+  background:var(--bg);border:1px solid #2a1f1f;border-radius:10px;padding:13px 10px;width:118px}
+.aflow .step .ic{font-size:23px;line-height:1}
+.aflow .step span{font-size:11px;color:#aab8b0;line-height:1.3}
+.aflow .ok{color:#ff6b6b;font-size:20px;font-weight:700}

@@ -28,6 +28,11 @@
       padding:11px 22px;border-radius:9px;font-size:15px}
     .flash{position:fixed;inset:0;background:#ff1e1e;z-index:9999;pointer-events:none;opacity:0;animation:flash 1.3s ease-out forwards}
     @keyframes flash{0%{opacity:0}10%{opacity:.7}26%{opacity:.12}42%{opacity:.5}100%{opacity:0}}
+    .aflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 20px}
+    .aflow .step{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;background:#0b1210;border:1px solid #2a1f1f;border-radius:10px;padding:13px 10px;width:122px}
+    .aflow .step .ic{font-size:23px;line-height:1}
+    .aflow .step span{font-size:11px;color:#aab8b0;line-height:1.3}
+    .aflow .ok{color:#ff6b6b;font-size:20px;font-weight:700}
   </style>
 </head>
 <body>
@@ -43,6 +48,14 @@
 
   <div class="lesson">
     <h2>&#9888; Arka sekmen değiştirildi! (Reverse Tabnabbing)</h2>
+
+    <div class="aflow">
+      <div class="step"><span class="ic">🔗</span><span>Yeni sekmede link açarsın</span></div>
+      <span class="ok">&rarr;</span>
+      <div class="step"><span class="ic">🔙</span><span>O sayfa eski sekmene erişir</span></div>
+      <span class="ok">&rarr;</span>
+      <div class="step"><span class="ic">🎣</span><span>Eski sekmen sahte girişe döner</span></div>
+    </div>
     <p>Az önce yeni bir sekmede bir "hız testi" açtın. İşte o sayfa, arkada bıraktığın <b>Teknopanorama sekmene erişip</b> onu sessizce bu sahte giriş sayfasına çevirdi. Sen hız testine bakarken haberin bile olmadı.</p>
 
     <h3>Neden tehlikeli?</h3>

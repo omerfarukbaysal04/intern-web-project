@@ -22,6 +22,7 @@ function Navbar() {
             <Link to="/">Yapay Zeka</Link>
             <Link to="/">Güvenlik</Link>
             <Link to="/">Enerji</Link>
+            <Link to="/farkindalik" className="nav-fk">🛡 Farkındalık</Link>
           </div>
 
           <form className="nav-search" method="get" action="/search">

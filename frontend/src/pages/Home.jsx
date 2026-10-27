@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import IntroModal from '../components/IntroModal'
 
 function Home(){
-    const [posts, setPosts] = useState([]) 
-
+    const [posts, setPosts] = useState([])
+    const [intro, setIntro] = useState(false)
 
     useEffect(() => {
         fetch("/api/posts")
@@ -11,8 +12,20 @@ function Home(){
         .then(data => setPosts(data.items))
     }, [])
 
+    // Ilk ziyarette karsilama penceresini goster (sonra hatirla).
+    useEffect(() => {
+        try { if (!localStorage.getItem("intro_goruldu")) setIntro(true) } catch {}
+    }, [])
+
+    function introKapat() {
+        setIntro(false)
+        try { localStorage.setItem("intro_goruldu", "1") } catch {}
+    }
+
   return (
     <>
+      {intro && <IntroModal onClose={introKapat} />}
+
       <section className="hero">
         <div className="wrap">
           <div className="kicker">Teknoloji · Enerji · Güvenlik</div>

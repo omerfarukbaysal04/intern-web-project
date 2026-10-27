@@ -6,6 +6,14 @@ function DomXssModal({ cookie, onClose }) {
       <div className="csrf-bg">
         <div className="csrf-card">
           <h2>⚠ DOM-based XSS saldırısına uğradın!</h2>
+
+          <div className="aflow">
+            <div className="step"><span className="ic">🔗</span><span>Davet linkine tıklarsın</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">#️⃣</span><span>Hash'teki kod (sunucu görmez)</span></div>
+            <span className="ok">→</span>
+            <div className="step"><span className="ic">⚡</span><span>Tarayıcında çalışır</span></div>
+          </div>
           <p>
             Tıkladığın "davet" linkinin içine gizlenmiş kod, senin tarayıcında —
             bu sitenin adına — çalıştı.
