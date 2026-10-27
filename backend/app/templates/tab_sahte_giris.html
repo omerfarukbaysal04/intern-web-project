@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oturum Doldu · Teknopanorama</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:#0b1210;color:#dce5e0;
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6;
+      display:flex;align-items:center;justify-content:center;padding:24px;gap:30px;flex-wrap:wrap}
+    .login{width:340px}
+    .login .logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:20px;margin-bottom:8px}
+    .login .logo .mark{width:12px;height:12px;border-radius:3px;background:#3fa06b}
+    .login .note{font-size:13px;color:#e8c07a;margin-bottom:18px}
+    .login input{width:100%;background:#121b16;border:1px solid #212e26;color:#dce5e0;
+      border-radius:9px;padding:12px 14px;font-size:14px;outline:none;margin-bottom:12px}
+    .login button{width:100%;background:#1d6b45;color:#eafff3;border:none;padding:12px;
+      border-radius:9px;font-size:15px;font-weight:500;cursor:pointer}
+    .lesson{max-width:500px;background:#160a0a;border:1px solid #3a1414;border-top:4px solid #ff4d4d;
+      border-radius:16px;padding:28px 32px}
+    .lesson h2{color:#ff6b6b;font-size:22px;margin-bottom:12px}
+    .lesson h3{font-size:15px;color:#dce5e0;margin:18px 0 6px}
+    .lesson p{font-size:14px;color:#aab8b0}
+    .lesson b{color:#cdd8d1}
+    .lesson code{background:#0b1210;padding:2px 6px;border-radius:5px;color:#58b982;font-size:13px}
+    .lesson a{display:inline-block;margin-top:22px;background:#1d6b45;color:#eafff3;text-decoration:none;
+      padding:11px 22px;border-radius:9px;font-size:15px}
+    .flash{position:fixed;inset:0;background:#ff1e1e;z-index:9999;pointer-events:none;opacity:0;animation:flash 1.3s ease-out forwards}
+    @keyframes flash{0%{opacity:0}10%{opacity:.7}26%{opacity:.12}42%{opacity:.5}100%{opacity:0}}
+  </style>
+</head>
+<body>
+  <div class="flash"></div>
+
+  <div class="login">
+    <div class="logo"><span class="mark"></span>Teknopanorama</div>
+    <div class="note">⚠ Oturumunuz sona erdi. Devam etmek için tekrar giriş yapın.</div>
+    <input type="text" placeholder="Kullanıcı adı" disabled>
+    <input type="password" placeholder="Parola" disabled>
+    <button disabled>Tekrar Giriş Yap</button>
+  </div>
+
+  <div class="lesson">
+    <h2>&#9888; Arka sekmen değiştirildi! (Reverse Tabnabbing)</h2>
+    <p>Az önce yeni bir sekmede bir "hız testi" açtın. İşte o sayfa, arkada bıraktığın <b>Teknopanorama sekmene erişip</b> onu sessizce bu sahte giriş sayfasına çevirdi. Sen hız testine bakarken haberin bile olmadı.</p>
+
+    <h3>Neden tehlikeli?</h3>
+    <p>Sekmeye geri döndüğünde "oturumun doldu, tekrar giriş yap" yazısını görüp, <b>güvendiğin sekme</b> olduğu için şüphelenmeden parolanı yazardın — ve parola doğrudan saldırgana giderdi.</p>
+
+    <h3>Nasıl oldu?</h3>
+    <p>Yeni sekmede açılan sayfa, kendisini açan sekmeye <code>window.opener</code> ile ulaşabiliyordu. Linkte <code>target="_blank"</code> vardı ama <code>rel="noopener"</code> yoktu; bu yüzden açılan sayfa eski sekmenin adresini değiştirebildi.</p>
+
+    <h3>Nasıl korunulur?</h3>
+    <p>Yeni sekmede açılan tüm dış bağlantılara <code>rel="noopener"</code> eklenmeli (modern tarayıcılar artık bunu varsayılan yapıyor). Sen de: yeni sekmeden döndüğünde beklenmedik bir "tekrar giriş" ekranı görürsen, <b>önce adres çubuğuna bak.</b></p>
+
+    <a href="http://localhost:5173/">← Gerçek siteye dön</a>
+  </div>
+</body>
+</html>

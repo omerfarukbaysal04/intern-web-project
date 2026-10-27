@@ -140,3 +140,43 @@ def csrf_uyari(request: Request):
     if uyari:
         USERS[kullanici]["csrf_uyari"] = False   # bir kez göster, sonra temizle
     return {"uyari": uyari}
+
+
+# --- OPEN REDIRECT ---
+@app.get("/git")
+def git(url: str = "/"):
+    if SAFE_MODE:
+        # savunma: sadece site-ici (goreli) adreslere izin ver; dis adresi reddet
+        if url.startswith("/") and not url.startswith("//"):
+            return RedirectResponse(url=url, status_code=303)
+        return RedirectResponse(url="/", status_code=303)
+    # zafiyetli: ne verilirse oraya yonlendir (dis sitelere bile)
+    return RedirectResponse(url=url, status_code=303)
+
+
+@app.get("/sahte-giris", response_class=HTMLResponse)
+def sahte_giris(request: Request):
+    return templates.TemplateResponse("sahte_giris.html", {"request": request})
+
+
+# --- REVERSE TABNABBING ---
+@app.get("/tab-saldirgan", response_class=HTMLResponse)
+def tab_saldirgan(request: Request):
+    return templates.TemplateResponse("tab_saldirgan.html", {"request": request})
+
+
+@app.get("/tab-sahte-giris", response_class=HTMLResponse)
+def tab_sahte_giris(request: Request):
+    return templates.TemplateResponse("tab_sahte_giris.html", {"request": request})
+
+
+# React'in SAFE_MODE durumunu ogrenebilmesi icin (DOM XSS savunmasi client tarafinda)
+@app.get("/api/safe-mode")
+def api_safe_mode():
+    return {"safe_mode": SAFE_MODE}
+
+
+# --- MALVERTISING: sahte odeme (phishing) sayfasi ---
+@app.get("/premium-odeme", response_class=HTMLResponse)
+def premium_odeme(request: Request):
+    return templates.TemplateResponse("sahte_odeme.html", {"request": request})

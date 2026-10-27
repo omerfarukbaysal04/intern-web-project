@@ -13,6 +13,10 @@ export default defineConfig({
       '/saldirgan': 'http://127.0.0.1:8000', // clickjacking demo saldirgan sayfasi
       '/clickjack-ders': 'http://127.0.0.1:8000', // clickjacking farkindalik dersi
       '/csrf-saldirgan': 'http://127.0.0.1:8000', // csrf demo saldirgan sayfasi
+      '/git': 'http://127.0.0.1:8000', // open redirect endpoint
+      '/tab-saldirgan': 'http://127.0.0.1:8000', // tabnabbing yeni-sekme sayfasi
+      '/tab-sahte-giris': 'http://127.0.0.1:8000', // tabnabbing ele gecirilen sekme
+      '/premium-odeme': 'http://127.0.0.1:8000', // malvertising sahte odeme sayfasi
     },
   },
 })

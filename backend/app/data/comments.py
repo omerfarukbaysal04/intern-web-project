@@ -24,6 +24,21 @@ COMMENTS = {
         {"yazar": "teknosever", "metin": "Cihaz ustu modeller gercekten oyunu degistirecek.", "resim": ""},
         {"yazar": "x_kullanici", "metin": "Bence de cok yerinde tespitler 👏 <img src=x style=\"display:none\" onerror=\"window.xssYakala && window.xssYakala(document.cookie)\">", "resim": ""},
     ],
+    # --- OPEN REDIRECT tuzagi: link METNI guvenilir gorunuyor, href ise /git ile
+    #     sahte giris sayfasina gidiyor (metin != href = klasik phishing). ---
+    "veri-sizintisi-ilk-24-saat": [
+        {"yazar": "guvenlik_dostu", "metin": "Cok onemli bir konu. Resmi guvenlik rehberine buradan ulasabilirsiniz: <a href=\"/git?url=http://127.0.0.1:8000/sahte-giris\">teknopanorama.com/guvenlik-rehberi</a>", "resim": ""},
+    ],
+    # --- REVERSE TABNABBING tuzagi: target=_blank + rel=opener olan dis link.
+    #     Yeni sekmede acilan sayfa window.opener ile eski sekmeyi ele gecirir. ---
+    "acik-kaynak-bakimcilari": [
+        {"yazar": "devtools_fan", "metin": "Bu araci denemelisiniz, baglantinizi gercekten iyi olcuyor: <a href=\"/tab-saldirgan\" target=\"_blank\" rel=\"opener\">speedtest-pro.com</a>", "resim": ""},
+    ],
+    # --- DOM-BASED XSS tuzagi: davet linki, payload URL'nin hash (#) kisminda.
+    #     Hash sunucuya gitmez; /davet sayfasi onu client'ta innerHTML'e yazinca calisir. ---
+    "cihaz-ustu-yapay-zeka-gizlilik": [
+        {"yazar": "davetci", "metin": "Seni de Teknopanorama'ya davet ediyorum, buradan katilabilirsin: <a href=\"/davet#%3Cimg%20src%3Dx%20onerror%3DxssDom()%3E\">davet linkin hazir 🎉</a>", "resim": ""},
+    ],
 }
 
 
