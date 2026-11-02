@@ -4,7 +4,9 @@
 
 {% block head %}
 <style>
-  .login{max-width:380px;margin:60px auto;padding:0 24px}
+  .login{max-width:380px;margin:50px auto;padding:0 24px}
+  .login .geri{display:inline-block;font-size:14px;color:var(--muted);text-decoration:none;margin-bottom:18px}
+  .login .geri:hover{color:var(--green-soft)}
   .login h1{font-size:26px;font-weight:700;margin-bottom:6px}
   .login .muted{color:var(--muted);font-size:14px;margin-bottom:24px}
   .login form{display:flex;flex-direction:column;gap:12px}
@@ -22,6 +24,7 @@
 
 {% block content %}
 <div class="login">
+  <a class="geri" href="/">← Ana sayfa</a>
   <h1>Giriş Yap</h1>
   <p class="muted">Hesabına erişmek için giriş yap.</p>
 

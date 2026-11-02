@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': 'http://127.0.0.1:8000', //cors
+      '/static': 'http://127.0.0.1:8000', // sunucu-render'li sayfalarin ortak stili
       '/search': 'http://127.0.0.1:8000', // sunucu-render'li arama sayfasi (zafiyetli)
       '/giris': 'http://127.0.0.1:8000',  // giris sayfasi (backend)
       '/hesap': 'http://127.0.0.1:8000',  // hesap + /hesap/email + /hesap/sil

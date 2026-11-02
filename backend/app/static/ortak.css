@@ -1,0 +1,131 @@
+/* =========================================================================
+   Teknopanorama — sunucu-render'li sayfalarin ortak stili
+   =========================================================================
+
+   Neden var: tema uc ayri yerde kopyalanmisti. Her bagimsiz Jinja sayfasi
+   kendi <style> blogunda ayni seyleri tekrar ediyordu -- renk degiskenleri,
+   reset, koyu govde, kirmizi "ders karti", kirmizi flas ve saldiri akis
+   diyagrami. .aflow bes dosyada, reset sekiz dosyada ayni sekilde duruyordu.
+   Bir rengi degistirmek icin sekiz dosyaya dokunmak gerekiyordu.
+
+   Burasi o ortak kismi tek yerde tutar. Sayfalar yalnizca kendilerine ozgu
+   kurallari kendi <style> bloklarinda birakir.
+
+   ISTISNA: saldirgan sayfalari (saldirgan.html, csrf_saldirgan.html,
+   tab_saldirgan.html) bu dosyayi BILEREK kullanmaz. Onlar kurgu geregi
+   "baska bir site" gibi gorunmek zorunda; Teknopanorama'nin temasini
+   paylasmalari dersin kendisini bozardi.
+
+   Frontend tarafinin karsiligi: frontend/src/index.css
+   ========================================================================= */
+
+:root{
+  --bg:#0b1210;
+  --panel:#121b16;
+  --panel-2:#16211a;
+  --border:#212e26;
+  --border-hover:#30463a;
+  --text:#dce5e0;
+  --muted:#8a9a91;
+  --faint:#637469;
+  --green:#3fa06b;
+  --green-soft:#58b982;
+  --green-deep:#1d6b45;
+  --green-dim:#16281e;
+  --red:#ff5a5a;
+  --red-soft:#ff6b6b;
+  --red-border:#3a1414;
+  --red-bg:#160a0a;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Ders/uyari sayfalarinin govdesi: icerik ekranin ortasinda durur.
+   Kullanimi: <body class="ders"> */
+body.ders{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:30px;
+  padding:24px;
+}
+
+/* --- kirmizi flas (saldiri aninda ekrani bir kez basar) ---------------- */
+.flash{position:fixed;inset:0;background:#ff1e1e;z-index:9999;pointer-events:none;
+  opacity:0;animation:flash 1.3s ease-out forwards}
+@keyframes flash{0%{opacity:0}10%{opacity:.7}26%{opacity:.12}42%{opacity:.5}100%{opacity:0}}
+
+/* --- saldiri akis diyagrami (adim -> adim -> adim) --------------------- */
+.aflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 20px}
+.aflow .step{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;
+  background:var(--bg);border:1px solid #2a1f1f;border-radius:10px;padding:13px 10px;width:122px}
+.aflow .step .ic{font-size:23px;line-height:1}
+.aflow .step span{font-size:11px;color:#aab8b0;line-height:1.3}
+.aflow .ok{color:var(--red-soft);font-size:20px;font-weight:700}
+
+/* --- ders karti (kirmizi: "az once ne oldu") --------------------------- */
+.lesson{max-width:500px;background:var(--red-bg);border:1px solid var(--red-border);
+  border-top:4px solid #ff4d4d;border-radius:16px;padding:28px 32px}
+.lesson h1,.lesson h2{color:var(--red-soft);font-size:22px;margin-bottom:12px;
+  display:flex;align-items:center;gap:10px}
+.lesson h3{font-size:15px;color:var(--text);margin:18px 0 6px}
+.lesson p{font-size:14px;color:#aab8b0}
+.lesson b{color:#cdd8d1}
+.lesson code{background:var(--bg);padding:2px 6px;border-radius:5px;color:var(--green-soft);font-size:13px}
+.lesson a.geri,.lesson>a{display:inline-block;margin-top:22px;background:var(--green-deep);
+  color:#eafff3;text-decoration:none;padding:11px 22px;border-radius:9px;font-size:15px}
+.lesson a.geri:hover,.lesson>a:hover{background:#238a57}
+
+/* Tek basina duran ders karti (yaninda sahte form yok) biraz daha genis. */
+.lesson.tek{max-width:600px;width:100%;background:var(--panel);padding:32px 36px}
+.lesson.tek h1{font-size:26px;margin-bottom:14px}
+.lesson.tek p{font-size:15px}
+
+/* --- sahte giris / odeme paneli (solda duran "ikna edici" kisim) -------
+   Adi bilerek .sahte-panel: gercek giris sayfasi (giris.html) .login
+   sinifini kullaniyor, ayni adi vermek ikisini carpistirirdi. */
+.sahte-panel{width:340px}
+.sahte-panel .logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:20px;margin-bottom:8px}
+.sahte-panel .logo .mark{width:12px;height:12px;border-radius:3px;background:var(--green)}
+.sahte-panel .note{font-size:13px;color:#e8c07a;margin-bottom:18px}
+.sahte-panel .baslik{font-size:14px;color:#8a9a91;margin-bottom:18px}
+.sahte-panel label{font-size:12px;color:#8a9a91;display:block;margin-bottom:5px}
+.sahte-panel input{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);
+  border-radius:9px;padding:12px 14px;font-size:14px;outline:none;margin-bottom:12px}
+.sahte-panel button{width:100%;background:var(--green-deep);color:#eafff3;border:none;padding:12px;
+  border-radius:9px;font-size:15px;font-weight:500;cursor:pointer}
+.sahte-panel .row{display:flex;gap:12px}
+/* sahte adres cubugu: gercek alan adini kirmizi gosterir */
+.sahte-panel .url-bar{font-family:monospace;font-size:12px;color:#8a9a91;background:var(--panel);
+  border:1px solid var(--border);border-radius:7px;padding:7px 10px;margin-bottom:18px;word-break:break-all}
+.sahte-panel .url-bar .host{color:var(--red-soft)}
+/* odeme tutari kutusu */
+.sahte-panel .tutar{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;font-size:14px;display:flex;justify-content:space-between;margin-bottom:16px}
+.sahte-panel .tutar b{color:var(--green-soft)}
+
+/* =========================================================================
+   DUYARLILIK -- dosyanin sonunda: ayni ozgullukteki kurallari ancak
+   buradan ezebiliyoruz.
+   ========================================================================= */
+@media (max-width:620px){
+  body.ders{padding:16px;gap:18px;align-items:flex-start}
+  .sahte-panel{width:100%}
+  .lesson{padding:22px 20px;max-width:100%}
+  .lesson.tek{padding:24px 22px}
+  .lesson h1,.lesson h2{font-size:19px}
+  .lesson.tek h1{font-size:21px}
+  .aflow{gap:6px}
+  .aflow .step{width:calc(50% - 3px);padding:10px 8px}
+  .aflow .ok{display:none}   /* dar ekranda oklar satiri bozuyor */
+}

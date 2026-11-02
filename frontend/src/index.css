@@ -19,7 +19,8 @@
   --green-dim:#16281e;
   --red:#ff5a5a;
 
-  --wrap:1040px;
+  --wrap:1320px;        /* icerik genisligi */
+  --wrap-nav:1600px;    /* header daha genis: logo sola, hesap saga yaslansin */
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -42,14 +43,23 @@ a{color:inherit;text-decoration:none}
 /* ---- navbar ---- */
 .nav-bar{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--border);
   background:rgba(11,18,16,0.88);backdrop-filter:blur(8px)}
-.nav-inner{height:64px;display:flex;align-items:center;gap:30px}
+/* Header icerikten daha genis bir kapsayici kullanir: logo mumkun oldugunca
+   solda, arama + hesap sagda, kategoriler ortada kalsin. */
+.nav-bar .wrap{max-width:var(--wrap-nav);padding:0 32px}
+/* Uc sutun: yanlar esit pay alir, orta sutun kadar genisler.
+   Boylece kategoriler, saga ve sola yaslanan bloklarin genisligi ne olursa
+   olsun EKRANIN ortasinda kalir (margin:auto bunu yapamiyor). */
+.nav-inner{height:64px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:30px}
+.logo{justify-self:start}
+.nav-links{justify-self:center}
+.nav-right{display:flex;align-items:center;gap:24px;justify-self:end}
 .logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:18px;letter-spacing:-0.01em;color:var(--text)}
 .logo .mark{width:11px;height:11px;border-radius:3px;background:var(--green)}
 .nav-links{display:flex;gap:24px;font-size:14px}
 .nav-links a{color:var(--muted);padding:4px 0;border-bottom:2px solid transparent;transition:color .15s}
 .nav-links a:hover{color:var(--text)}
 .nav-links a.active{color:var(--text);border-bottom-color:var(--green)}
-.nav-search{margin-left:auto;position:relative}
+.nav-search{position:relative}
 .nav-search input{background:var(--panel);border:1px solid var(--border);color:var(--text);
   border-radius:9px;padding:9px 12px 9px 34px;font-size:14px;width:230px;outline:none;transition:border-color .15s}
 .nav-search input::placeholder{color:var(--faint)}
@@ -63,25 +73,95 @@ a{color:inherit;text-decoration:none}
 .nav-fk-sayac{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
   color:var(--green-soft);background:var(--green-dim);border:1px solid var(--green-deep);
   padding:1px 6px;border-radius:6px;line-height:1.5}
-/* Navbar dar ekranlarda zaten sigmiyor (sabit genislikli arama + link grubu);
-   sayaci orada gizleyip durumu kotulestirmiyoruz. Ilerleme yine panoda gorunur. */
-@media (max-width:980px){.nav-fk-sayac{display:none}}
+/* --- navbar duyarliligi ---------------------------------------------
+   Tek satirda logo + linkler + arama + hesap yaklasik 1024px'e kadar
+   siginiyor; oturum acikken sag taraf buyudugu icin daha erken tasiyor.
+   Iki kademe: once sikistir, sonra iki satira bol. */
 
-/* ---- hero ---- */
-.hero{padding:58px 0 38px}
+/* 1. kademe: bosluklari ve arama kutusunu daralt, sayaci gizle */
+@media (max-width:1080px){
+  .nav-inner{gap:18px}
+  .nav-links{gap:16px}
+  .nav-search input{width:170px}
+  .nav-fk-sayac{display:none}
+}
+
+/* 2. kademe: ustte logo ile arama+hesap, altta yatay kayabilen kategoriler. */
+@media (max-width:900px){
+  .nav-bar .wrap{padding:0 20px}
+  /* dar ekranda uc sutunlu izgara yerine saran esnek satir */
+  .nav-inner{display:flex;flex-wrap:wrap;height:auto;padding:12px 0;row-gap:12px;gap:14px}
+  .logo{order:1;justify-self:auto}
+  .nav-right{order:2;margin-left:auto;gap:16px}
+  .nav-links{order:3;flex-basis:100%;margin:0;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{flex-shrink:0}
+  .nav-search input{width:150px}
+  .nav-fk-sayac{display:inline-block}  /* burada yer var, geri gelsin */
+}
+
+/* 3. kademe: telefonda logo + arama + hesap tek satira sigmiyor;
+   arama ve hesap en alta, tam genislige gecer. */
+@media (max-width:620px){
+  .nav-right{order:3;flex-basis:100%;margin-left:0;justify-content:space-between}
+  .nav-search{flex:1 1 auto}
+  .nav-search input{width:100%}
+}
+
+
+
+/* ---- hero: solda tanitim, sagda haber slaydi ---- */
+.hero{padding:54px 0 44px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:48px;align-items:center}
 .hero .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:16px;font-weight:500}
-.hero h1{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-0.025em;max-width:780px}
-.hero p{margin-top:20px;color:var(--muted);font-size:17px;max-width:580px}
+.hero h1{font-size:44px;line-height:1.08;font-weight:700;letter-spacing:-0.025em}
+.hero p{margin-top:20px;color:var(--muted);font-size:17px;max-width:520px}
+
+/* ---- hero haber slaydi ---- */
+.slider{position:relative;outline:none}
+.slider:focus-visible{box-shadow:0 0 0 2px var(--green-deep);border-radius:18px}
+.slider-kart{display:block;position:relative;height:380px;border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);background:var(--panel);transition:border-color .15s}
+.slider-kart:hover{border-color:var(--border-hover)}
+.slider-kart img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* metnin okunmasi icin alttan yukari koyu gecis */
+.slider-kart::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(5,8,7,.96) 18%,rgba(5,8,7,.55) 52%,rgba(5,8,7,.1) 100%)}
+.slider-icerik{position:absolute;inset:auto 0 0 0;padding:26px 28px;z-index:1}
+.slider-icerik h2{font-size:25px;line-height:1.24;font-weight:700;margin-top:12px;letter-spacing:-0.015em}
+.slider-icerik p{margin-top:10px;color:#b9c6be;font-size:14px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.slider-meta{margin-top:12px;font-size:12px;color:var(--faint);display:flex;gap:8px;flex-wrap:wrap}
+
+.slider-kontrol{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
+.slider-ok{background:var(--panel);border:1px solid var(--border);color:var(--muted);
+  width:32px;height:32px;border-radius:9px;font-size:18px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:border-color .15s,color .15s}
+.slider-ok:hover{border-color:var(--border-hover);color:var(--text)}
+.slider-nokta{display:flex;gap:7px}
+.slider-nokta button{width:7px;height:7px;padding:0;border-radius:50%;cursor:pointer;
+  border:none;background:var(--border-hover);transition:background .15s,width .15s}
+.slider-nokta button:hover{background:var(--muted)}
+.slider-nokta button.aktif{background:var(--green-soft);width:20px;border-radius:99px}
 
 /* ---- bolum etiketi ---- */
 .sec-label{display:flex;align-items:center;gap:14px;margin:12px 0 22px}
-.sec-label span{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.sec-label > span{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500;white-space:nowrap}
 .sec-label .line{flex:1;height:1px;background:var(--border)}
 
+/* bolum basligiyla ayni satirdaki kategori secenekleri */
+.sec-kategori{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.sec-kategori a,.sec-kategori > span{font-size:13px;color:var(--muted);white-space:nowrap;
+  padding:6px 13px;border-radius:99px;border:1px solid var(--border);background:var(--panel);
+  transition:border-color .15s,color .15s,background .15s;text-transform:none;letter-spacing:0}
+.sec-kategori a:hover{border-color:var(--border-hover);color:var(--text)}
+.sec-kategori > span.aktif{color:var(--green-soft);background:var(--green-dim);border-color:var(--green-deep)}
+
 /* ---- kart izgarasi ---- */
-.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-bottom:42px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-bottom:34px}
 @media (max-width:860px){.card-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.card-grid{grid-template-columns:1fr}}
+
 
 .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;
   transition:border-color .15s,transform .15s;display:block}
@@ -138,9 +218,15 @@ a{color:inherit;text-decoration:none}
 
 /* ---- footer ---- */
 .site-footer{border-top:1px solid var(--border);margin-top:20px}
-.site-footer .inner{padding:28px 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--faint)}
-.site-footer a{color:var(--muted)}
-.site-footer a:hover{color:var(--green-soft)}
+.site-footer .inner{padding:26px 0;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font-size:13px;color:var(--faint)}
+/* sag altta kisisel baglantilar (ikon) */
+.footer-link{display:flex;align-items:center;gap:10px}
+.footer-link a{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--muted);
+  transition:border-color .15s,color .15s,transform .15s}
+.footer-link a:hover{border-color:var(--green-deep);color:var(--green-soft);transform:translateY(-2px)}
+.footer-link svg{display:block}
 
 /* ---- durum metinleri ---- */
 .state{color:var(--muted);padding:20px 0}
@@ -283,3 +369,57 @@ a{color:inherit;text-decoration:none}
 .aflow .step .ic{font-size:23px;line-height:1}
 .aflow .step span{font-size:11px;color:#aab8b0;line-height:1.3}
 .aflow .ok{color:#ff6b6b;font-size:20px;font-weight:700}
+
+/* =========================================================================
+   DUYARLILIK (mobil) -- bu blok dosyanin SONUNDA durmak zorunda.
+   Ayni ozgullukteki kurallarda sonra gelen kazandigi icin, yukarida
+   tanimli .hero h1 gibi kurallari ancak buradan ezebiliyoruz.
+   ========================================================================= */
+@media (max-width:480px){
+  .logo{font-size:16px}
+  .nav-auth{gap:12px;font-size:13px}
+  .nav-auth .hi{display:none}   /* "Merhaba, X" sigmiyor; Hesabim/Cikis kalsin */
+}
+
+/* --- hero + slayt: tek sutuna dus -------------------------------- */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:30px}
+  .hero p{max-width:none}
+  .slider-kart{height:300px}
+}
+
+/* --- mobil: tipografi ve kenar bosluklari -------------------------- */
+@media (max-width:560px){
+  .wrap{padding:0 18px}
+  .hero{padding:38px 0 26px}
+  .hero h1{font-size:31px;line-height:1.14}
+  .slider-kart{height:250px}
+  .slider-icerik{padding:18px 18px}
+  .slider-icerik h2{font-size:20px}
+  .slider-icerik p{-webkit-line-clamp:2}
+  .site-footer .inner{flex-direction:column;align-items:flex-start;gap:14px}
+  /* bolum basligi + kategori secenekleri alt alta, secenekler yatay kayar */
+  .sec-label{flex-wrap:wrap;gap:10px}
+  .sec-label .line{display:none}
+  .sec-kategori{flex-basis:100%;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .sec-kategori::-webkit-scrollbar{display:none}
+  .hero p{font-size:15px;margin-top:16px}
+  .hero .kicker{font-size:12px;margin-bottom:12px}
+  .article{padding:30px 18px}
+  .article h1{font-size:26px}
+  .article .content{font-size:16px;gap:16px}
+  .fk-hero{padding:34px 0 22px}
+  .fk-hero h1{font-size:27px}
+  .kat-hero{padding:32px 0 8px}
+  .kat-hero h1{font-size:26px}
+  .comments{padding:0 18px}
+  /* ilerleme panosunda sayi ve buton alt alta rahat dursun */
+  .fk-pano{padding:18px 18px}
+  .fk-sayi strong{font-size:30px}
+  /* farkindalik modallari mobilde ekrani tasmasin */
+  .csrf-bg{padding:12px}
+  .csrf-card{padding:22px 20px;max-height:88vh;overflow-y:auto}
+  .csrf-card h2{font-size:19px}
+  .aflow .step{width:92px;padding:10px 8px}
+  .ad-popup{right:12px;left:12px;bottom:12px;width:auto}
+}

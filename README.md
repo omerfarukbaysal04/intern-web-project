@@ -128,6 +128,60 @@ Bu kısıt kendi başına bir ders — **modern çerez varsayılanları bu sald�
 kısmen zorlaştırıyor.** Savunmanın gösterimi yine gerçek: `X-Frame-Options: DENY`
 sayfayı aynı origin'deki iframe'lere bile kapatır.
 
+## Arayüz Notları
+
+**Sayfa düzeni.** İçerik genişliği 1040px'ten **1320px**'e çıkarıldı; header ise
+kendi daha geniş kapsayıcısını (1600px) kullanıyor, böylece logo ekranın soluna
+yaslanıyor. Navbar üç sütunlu bir ızgara: solda logo, **ortada** kategoriler,
+sağda arama ve hesap. Kategorileri gerçekten ekranın ortasına almak için ızgara
+şart — `margin: 0 auto` onları yalnızca kalan boşluğa göre ortalıyor, sağdaki blok
+soldakinden geniş olduğu için görsel olarak sola kayıyorlardı. Haber detayı
+bilerek dar kaldı (720px): uzun metin için okunabilir satır uzunluğu.
+
+**Hero.** İki sütun: solda tanıtım metni, sağda öne çıkan haberleri gösteren
+otomatik dönen bir slayt (5 saniyede bir, fareyle üzerine gelince ya da odaklanınca
+durur, sol/sağ ok tuşlarıyla da gezilebilir). Hero'da bundan başka bir şey yok.
+Aşağısında **Son Yazılar** ızgarası var; kategoriler bu bölüm başlığıyla aynı
+satırda seçenek olarak duruyor ("Tümü" işaretli, diğerleri kendi kategori
+sayfasına götürür). Mobilde bu seçenekler yatay kayıyor.
+
+Sunucu-render'lı sayfalar (arama, giriş, hesap) aynı genişlikleri kullanır ve
+üst barlarında **"Gündem"** bağlantısı taşır; hesap ve giriş sayfalarında ayrıca
+içerik başında **"← Ana sayfa"** bağlantısı var. Bu sayfalar React kabuğunun
+dışında olduğu için geri dönüş yolunun açıkça görünmesi gerekiyor — yoksa
+kullanıcı yalnızca logoya tıklamayı tahmin etmek zorunda kalıyor.
+
+**Footer.** Solda telif satırı, sağda LinkedIn / GitHub / portfolyo bağlantıları
+(satır içi SVG ikon, `aria-label` ile adlandırılmış, `rel="noopener noreferrer"`).
+Mobilde alt alta geçiyor.
+
+
+**Tema tek yerden.** Sunucu-render'lı sayfaların ortak stili
+[`backend/app/static/ortak.css`](backend/app/static/ortak.css) içinde: renk
+değişkenleri, reset, koyu gövde, kırmızı "ders kartı", saldırı akış diyagramı ve
+sahte giriş/ödeme paneli. Önceden bunlar her bağımsız sayfanın kendi `<style>`
+bloğunda tekrarlanıyordu — `.aflow` beş dosyada, reset sekiz dosyada, renk
+değişkenleri altı dosyada. Bir rengi değiştirmek için sekiz dosyaya dokunmak
+gerekiyordu; artık bir dosyaya.
+
+Dosya FastAPI'nin `/static` mount'undan servis ediliyor, Vite de bu yolu `:8000`'e
+proxy'liyor. Sayfalarda yalnızca kendilerine özgü kurallar kaldı.
+
+**Saldırgan sayfaları bu dosyayı bilerek kullanmıyor.** `saldirgan.html`,
+`csrf_saldirgan.html` ve `tab_saldirgan.html` kurgu gereği "başka bir site" gibi
+görünmek zorunda; Teknopanorama'nın temasını paylaşmaları dersin kendisini bozardı.
+Bu yüzden kendi stillerini taşımaya devam ediyorlar.
+
+**Duyarlılık.** Navbar iki kademeli: dar ekranda önce boşluklar ve arama kutusu
+daralıyor, 900px altında ise iki satıra bölünüyor (üstte logo ve hesap, altta
+yatay kayabilen kategori satırı ve tam genişlikte arama). Ders sayfalarında akış
+diyagramı mobilde ikişerli diziliyor, oklar gizleniyor; sahte panel ile ders
+kartı alt alta geçiyor. Farkındalık modalleri mobilde ekranı taşmıyor.
+
+> CSS'te sıralama önemli: aynı özgüllükteki kurallarda sonra gelen kazanır.
+> Bu yüzden duyarlılık blokları hem `index.css`'te hem `ortak.css`'te
+> **dosyanın sonunda** durur.
+
 ## Teknoloji
 
 - **Frontend:** React (Vite) — güvenli/modern gezinme kabuğu (ana sayfa, haber detayı, davet, farkındalık panosu)
@@ -264,6 +318,7 @@ backend/app/
   main.py                   FastAPI uygulaması, tüm endpoint'ler
   config.py                 SAFE_MODE bayrağı
   sanitize.py               yorum HTML'i için beyaz-liste temizleyicisi (SAFE_MODE)
+  static/ortak.css          sunucu-render'lı sayfaların ortak teması
   data/                     posts.py (9 haber + kategoriler), users.py,
                             comments.py (yorumlar + ekili tuzaklar)
   templates/                sunucu-render'lı sayfalar + farkındalık ekranları (Jinja2)
@@ -283,8 +338,8 @@ frontend/public/
 frontend/src/
   ilerleme.js               saldırı listesi + ilerleme panosu (localStorage)
   pages/                    Home, Post, Kategori, Davet, Farkindalik
-  components/               Navbar, Footer, HaberKarti, reklam/popup ve
-                            farkındalık modalları
+  components/               Navbar, Footer, HaberKarti, HaberSlider,
+                            reklam/popup ve farkındalık modalları
   index.css                 tema (koyu yeşil)
 ```
 

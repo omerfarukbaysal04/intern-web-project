@@ -46,6 +46,8 @@ function Navbar() {
             </Link>
           </div>
 
+          {/* arama + hesap birlikte sagda dursun */}
+          <div className="nav-right">
           <form className="nav-search" method="get" action="/search">
             <span className="ic">⌕</span>
             <input type="text" name="q" placeholder="Haberlerde ara..." />
@@ -60,6 +62,7 @@ function Navbar() {
             ) : (
               <a href="/giris">Giriş Yap</a>
             )}
+          </div>
           </div>
         </nav>
       </div>

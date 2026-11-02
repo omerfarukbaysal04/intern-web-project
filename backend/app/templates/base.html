@@ -4,17 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Teknopanorama{% endblock %}</title>
+  {# Renk degiskenleri, reset ve koyu govde ortak dosyadan gelir;
+     asagida yalnizca bu kabuga ozgu kurallar kaliyor. #}
+  <link rel="stylesheet" href="/static/ortak.css">
   <style>
-    :root{--bg:#0b1210;--panel:#121b16;--border:#212e26;--border-hover:#30463a;
-      --text:#dce5e0;--muted:#8a9a91;--faint:#637469;--green:#3fa06b;--green-soft:#58b982;
-      --green-deep:#1d6b45;--green-dim:#16281e;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
-    .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+    /* Genislikler React tarafiyla ayni: icerik 1320, ust bar 1600.
+       Boylece sunucu-render'li sayfalar kabukla ayni hizada duruyor. */
+    .wrap{max-width:1320px;margin:0 auto;padding:0 24px}
+    .top .wrap{max-width:1600px;padding:0 32px}
     .top{border-bottom:1px solid var(--border);background:rgba(11,18,16,.88)}
     .top .inner{height:64px;display:flex;align-items:center;gap:20px}
     .logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:18px;color:var(--text);text-decoration:none}
     .logo .mark{width:11px;height:11px;border-radius:3px;background:var(--green)}
+    .logo:hover{color:var(--green-soft)}
+    .ust-link{font-size:14px;color:var(--muted);text-decoration:none;padding:4px 0;
+      border-bottom:2px solid transparent;margin-left:10px}
+    .ust-link:hover{color:var(--text);border-bottom-color:var(--green)}
     .sform{margin-left:auto;position:relative}
     .sform input{background:var(--panel);border:1px solid var(--border);color:var(--text);
       border-radius:9px;padding:9px 12px 9px 34px;font-size:14px;width:260px;outline:none}
@@ -45,6 +50,9 @@
 <body>
   <header class="top"><div class="wrap"><div class="inner">
     <a href="/" class="logo"><span class="mark"></span>Teknopanorama</a>
+    {# Bu sayfalar React kabugunun disinda; geri donus icin acik bir link
+       sart, yoksa kullanici yalnizca logoya tiklamayi tahmin etmek zorunda. #}
+    <a href="/" class="ust-link">Gündem</a>
     <form class="sform" method="get" action="/search">
       <span class="ic">⌕</span>
       <input name="q" placeholder="Haberlerde ara...">

@@ -7,6 +7,7 @@ import secrets
 from app.config import SAFE_MODE
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from fastapi import Form
 from fastapi.responses import RedirectResponse
@@ -15,8 +16,13 @@ from app.data.comments import yorumlar, yorum_ekle
 from app.sanitize import temizle
 
 
-templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent/"templates"))
+KOK = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=str(KOK/"templates"))
 app = FastAPI()
+
+# Sunucu-render'li sayfalarin ortak stili (bkz. static/ortak.css).
+# Vite bu yolu da :8000'e proxy'liyor, yani tarayici icin tek origin.
+app.mount("/static", StaticFiles(directory=str(KOK/"static")), name="static")
 
 def kullanici_oturum(request: Request):
      kullanici=request.cookies.get("oturum")
