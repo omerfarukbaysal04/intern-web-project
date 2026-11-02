@@ -1,5 +1,10 @@
+import { useEffect } from "react"
+import { isaretle } from "../ilerleme"
+
 // DOM-based XSS farkindalik modali (tasarim). csrf-* stillerini paylasir.
 function DomXssModal({ cookie, onClose }) {
+  useEffect(() => { isaretle("dom-xss") }, [])
+
   return (
     <>
       <div className="csrf-flash" />

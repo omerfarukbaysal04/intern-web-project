@@ -1,0 +1,34 @@
+{#
+  Farkindalik panosuna "bu saldiriya dustun" diye isaret birakir.
+
+  Ders ekranlarinin bir kismi React'te (modal), bir kismi burada sunucu-render'li
+  sayfa olarak yasiyor. Pano sayimi ikisini birden gormek zorunda; ortak nokta
+  tarayicinin localStorage'i. Vite backend sayfalarini da :5173'e proxy'ledigi
+  icin iki taraf da AYNI origin'de, dolayisiyla ayni depolamayi paylasiyor.
+
+  Kullanimi (sayfanin icinde, </body> oncesi):
+      {% with saldiri_id = "clickjacking" %}{% include "_ilerleme.html" %}{% endwith %}
+
+  DIKKAT: anahtar ve id'ler frontend/src/ilerleme.js ile PAYLASILIR.
+  Birini degistirirsen digerini de degistir.
+
+  Istisna: /sahte-giris sayfasi bu parcayi KULLANMAZ. Open redirect kurbani
+  oraya baska bir origin'de (127.0.0.1:8000) dusuyor -- bilerek, "artik baska
+  bir sitedesin" dersi icin. Farkli origin = farkli localStorage, o yuzden
+  isaret oradaki "gercek siteye don" linkine ?gorulen=... olarak eklenir.
+#}
+<script>
+  (function () {
+    try {
+      var anahtar = "tp_gorulen_saldirilar";
+      var liste = JSON.parse(localStorage.getItem(anahtar) || "[]");
+      if (!Array.isArray(liste)) liste = [];
+      if (liste.indexOf("{{ saldiri_id }}") < 0) {
+        liste.push("{{ saldiri_id }}");
+        localStorage.setItem(anahtar, JSON.stringify(liste));
+      }
+    } catch (e) {
+      // gizli pencere / depolama kapali: isaretleyemeyiz, ders yine gorunur
+    }
+  })();
+</script>

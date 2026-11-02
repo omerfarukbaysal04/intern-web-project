@@ -39,7 +39,18 @@
 
     <div class="bait">
       <button class="win-btn">Ödülümü Al 🎁</button>
-        <iframe src="/hesap"></iframe>
+      <!--
+        Gorunmez iframe: kurbanin gercek hesap sayfasi, tam "Odulumu Al"
+        butonunun uzerine hizalanmis. Tiklama butona degil, arkadaki
+        "Hesabimi Sil"e gidiyor.
+
+        Demo notu: bu sayfa Teknopanorama ile AYNI origin'de servis ediliyor.
+        Gercek bir saldirida farkli bir alan adi olurdu, ama o zaman oturum
+        cerezi SameSite=Lax oldugu icin iframe'e hic gonderilmezdi (bunun icin
+        HTTPS + SameSite=None gerekir). Savunmanin gosterimi yine gercek:
+        X-Frame-Options: DENY ayni origin'deki iframe'i de engelliyor.
+      -->
+      <iframe src="/hesap"></iframe>
     </div>
 
     <p class="fine">* Bu bir güvenlik farkındalık demosudur.</p>

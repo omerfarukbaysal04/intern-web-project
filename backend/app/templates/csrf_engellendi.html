@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}İstek engellendi · Teknopanorama{% endblock %}
+
+{% block head %}
+<style>
+  .blk{max-width:600px;margin:60px auto;padding:0 24px}
+  .blk .card{background:var(--panel);border:1px solid #1d4a32;border-top:4px solid #3fa06b;
+    border-radius:16px;padding:30px 34px}
+  .blk h1{color:#58b982;font-size:24px;margin-bottom:12px}
+  .blk h3{font-size:15px;margin:20px 0 6px}
+  .blk p{color:var(--muted);font-size:14px}
+  .blk b{color:var(--text)}
+  .blk code{background:var(--bg);padding:2px 6px;border-radius:5px;color:#58b982;font-size:13px}
+  .blk a{display:inline-block;margin-top:24px;background:var(--green-deep);color:#eafff3;
+    text-decoration:none;padding:11px 22px;border-radius:9px;font-size:15px}
+  .blk a:hover{background:#238a57}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="blk">
+  <div class="card">
+    <h1>&#128737; İstek engellendi — savunma çalıştı</h1>
+
+    <p>
+      Az önce <b>{{ islem }}</b> isteği geldi, ama isteğin yanında geçerli bir
+      <b>CSRF token</b> yoktu. Bu yüzden işlem <b>yapılmadı.</b>
+    </p>
+
+    <h3>Bu neyi gösteriyor?</h3>
+    <p>
+      Güvenli mod açıkken her durum değiştiren form, sunucunun o oturum için
+      ürettiği rastgele bir gizli değeri (<code>csrf_token</code>) taşımak zorunda.
+      Saldırganın sayfası bu değeri <b>okuyamaz</b> — tarayıcının same-origin
+      kuralı buna izin vermez. Dolayısıyla saldırgan senin adına form gönderse
+      bile doğrulama burada patlar.
+    </p>
+
+    <h3>Güvenli mod kapalıyken ne olurdu?</h3>
+    <p>
+      Aynı istek hiçbir soru sorulmadan uygulanırdı — CSRF saldırısının tamamı
+      bundan ibaret. (<code>backend/app/config.py</code> → <code>SAFE_MODE</code>)
+    </p>
+
+    <a href="/hesap">← Hesabıma dön</a>
+  </div>
+</div>
+{% endblock %}

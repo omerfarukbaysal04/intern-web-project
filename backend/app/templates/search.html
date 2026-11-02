@@ -78,5 +78,8 @@ window.caught = function () {
   </div>
 </div>
 
-{% if saldiri %}<script>caught()</script>{% endif %}
+{% if saldiri %}
+<script>caught()</script>
+{% with saldiri_id = "reflected-xss" %}{% include "_ilerleme.html" %}{% endwith %}
+{% endif %}
 {% endblock %}

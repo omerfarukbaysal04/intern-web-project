@@ -65,9 +65,11 @@
     <p>Yeni sekmede açılan sayfa, kendisini açan sekmeye <code>window.opener</code> ile ulaşabiliyordu. Linkte <code>target="_blank"</code> vardı ama <code>rel="noopener"</code> yoktu; bu yüzden açılan sayfa eski sekmenin adresini değiştirebildi.</p>
 
     <h3>Nasıl korunulur?</h3>
-    <p>Yeni sekmede açılan tüm dış bağlantılara <code>rel="noopener"</code> eklenmeli (modern tarayıcılar artık bunu varsayılan yapıyor). Sen de: yeni sekmeden döndüğünde beklenmedik bir "tekrar giriş" ekranı görürsen, <b>önce adres çubuğuna bak.</b></p>
+    <p>Yeni sekmede açılan tüm dış bağlantılara <code>rel="noopener"</code> eklenmeli (modern tarayıcılar artık bunu varsayılan yapıyor). Bu sitede "güvenli mod" açıkken sunucu, yorumlardaki her <code>target="_blank"</code> linkine bu niteliği <b>zorla ekliyor</b> (<code>backend/app/sanitize.py</code>); o zaman açılan sayfanın <code>window.opener</code>'ı boş olur ve saldırı çöker. Sen de: yeni sekmeden döndüğünde beklenmedik bir "tekrar giriş" ekranı görürsen, <b>önce adres çubuğuna bak.</b></p>
 
     <a href="http://localhost:5173/">← Gerçek siteye dön</a>
   </div>
+
+  {% with saldiri_id = "tabnabbing" %}{% include "_ilerleme.html" %}{% endwith %}
 </body>
 </html>

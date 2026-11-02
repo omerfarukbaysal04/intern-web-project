@@ -45,6 +45,8 @@
   <div class="section">
     <h3>E-posta Güncelle</h3>
     <form method="post" action="/hesap/email">
+      {# Guvenli modda sunucunun urettigi gizli deger; saldirgan bunu okuyamaz. #}
+      {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token }}">{% endif %}
       <input name="email" type="email" value="{{ user.email }}" required>
       <button type="submit">Güncelle</button>
     </form>
@@ -54,6 +56,7 @@
     <h3>Tehlikeli Bölge</h3>
     <p>Hesabını silersen tüm verilerin kalıcı olarak kaybolur. Bu işlem geri alınamaz.</p>
     <form method="post" action="/hesap/sil">
+      {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token }}">{% endif %}
       <button id="sil" type="submit">Hesabımı Sil</button>
     </form>
   </div>

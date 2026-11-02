@@ -67,7 +67,10 @@
     <h3>Nasıl korunulur?</h3>
     <p>Siteler yönlendirme yaparken hedefi <b>doğrulamalı</b>: yalnızca kendi site içine izin vermeli, dış adresleri reddetmeli. (Bu sitede "güvenli mod" açıkken <code>/git</code> dış adresleri engelliyor.) Sen de: bir linke tıkladıktan sonra <b>adres çubuğundaki gerçek alan adına</b> bak; "giriş" sayfalarında özellikle.</p>
 
-    <a href="http://localhost:5173/">← Gerçek siteye dön</a>
+    {# Bu sayfa kurbana BASKA bir origin'de (127.0.0.1:8000) acilir -- dersin
+       kendisi bu. Farkli origin = farkli localStorage, o yuzden farkindalik
+       panosuna isaret, gercek siteye donus linkiyle tasiniyor. #}
+    <a href="http://localhost:5173/?gorulen=open-redirect">← Gerçek siteye dön</a>
   </div>
 </body>
 </html>

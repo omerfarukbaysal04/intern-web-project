@@ -53,7 +53,12 @@
     <h3>Sen ne yapabilirsin?</h3>
     <p>Tanımadığın sayfalardaki "ödül kazandın" gibi cazip butonlara dikkat et; önemli bir hesapta işlem yapmadan önce gerçekten o sitede olduğundan emin ol.</p>
 
+    <h3>Demo notu: saldırgan sayfası neden aynı adreste?</h3>
+    <p>Gerçek hayatta bu tuzak <b>başka bir alan adında</b> durur. Bu demoda ise saldırgan sayfası da Teknopanorama ile <b>aynı origin'de</b> servis ediliyor — çünkü oturum çerezi <code>SameSite=Lax</code> ve tarayıcı onu <b>farklı siteden</b> açılan bir iframe'e göndermez; göndermesi için çerezin <code>SameSite=None; Secure</code> olması, yani HTTPS gerekir. Bu da kendi başına bir ders: <b>modern çerez varsayılanları bu saldırıyı zaten kısmen zorlaştırıyor.</b> Savunmanın gösterimi yine gerçek: <code>X-Frame-Options: DENY</code> sayfayı <b>aynı origin'deki</b> iframe'lere bile kapatır, bu yüzden güvenli mod açıkken saldırı burada da çöküyor.</p>
+
     <a class="back" href="/">Ana sayfaya dön</a>
   </div>
+
+  {% with saldiri_id = "clickjacking" %}{% include "_ilerleme.html" %}{% endwith %}
 </body>
 </html>

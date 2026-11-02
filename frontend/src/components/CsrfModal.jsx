@@ -1,6 +1,12 @@
+import { useEffect } from "react"
+import { isaretle } from "../ilerleme"
+
 // Farkindalik modali (tasarim). Kurban CSRF'e ugrayinca gosterilir:
 // kirmizi flas + "ne oldu / nasil korunursun".
 function CsrfModal({ onClose }) {
+  // Modal acildigi an bu saldiri "dustun" diye panoya islenir.
+  useEffect(() => { isaretle("csrf") }, [])
+
   return (
     <>
       <div className="csrf-flash" />

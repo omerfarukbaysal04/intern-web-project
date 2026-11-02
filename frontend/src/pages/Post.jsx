@@ -60,7 +60,7 @@ function Post(){
         .catch(()=>setPost("notFound"))
     },[slug])
 
-     if (post === "notfound") return <div className="wrap"><p className="state error">Yazı bulunamadı.</p></div>
+  if (post === "notFound") return <div className="wrap"><p className="state error">Yazı bulunamadı.</p></div>
   if (!post) return <div className="wrap"><p className="state">Yükleniyor...</p></div>
 
   return (

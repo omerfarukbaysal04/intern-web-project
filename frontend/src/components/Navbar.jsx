@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { TOPLAM, useIlerleme } from '../ilerleme'
 
 function getOturum(){
   const m= document.cookie.match(/(?:^|;\s*)oturum=([^;]+)/)
@@ -8,6 +9,7 @@ function getOturum(){
 
 function Navbar() {
   const oturum =getOturum()
+  const gorulen = useIlerleme()
   return (
     <header className="nav-bar">
       <div className="wrap">
@@ -22,7 +24,10 @@ function Navbar() {
             <Link to="/">Yapay Zeka</Link>
             <Link to="/">Güvenlik</Link>
             <Link to="/">Enerji</Link>
-            <Link to="/farkindalik" className="nav-fk">🛡 Farkındalık</Link>
+            <Link to="/farkindalik" className="nav-fk">
+              🛡 Farkındalık
+              <span className="nav-fk-sayac">{gorulen.length}/{TOPLAM}</span>
+            </Link>
           </div>
 
           <form className="nav-search" method="get" action="/search">

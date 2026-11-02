@@ -59,7 +59,13 @@ a{color:inherit;text-decoration:none}
 .nav-auth .hi{color:var(--muted)}
 .nav-auth a{color:var(--green-soft);transition:color .15s}
 .nav-auth a:hover{color:var(--text)}
-.nav-links a.nav-fk{color:var(--green-soft);white-space:nowrap}
+.nav-links a.nav-fk{color:var(--green-soft);white-space:nowrap;display:flex;align-items:center;gap:7px}
+.nav-fk-sayac{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  color:var(--green-soft);background:var(--green-dim);border:1px solid var(--green-deep);
+  padding:1px 6px;border-radius:6px;line-height:1.5}
+/* Navbar dar ekranlarda zaten sigmiyor (sabit genislikli arama + link grubu);
+   sayaci orada gizleyip durumu kotulestirmiyoruz. Ilerleme yine panoda gorunur. */
+@media (max-width:980px){.nav-fk-sayac{display:none}}
 
 /* ---- hero ---- */
 .hero{padding:58px 0 38px}
@@ -183,7 +189,13 @@ a{color:inherit;text-decoration:none}
 .fk-hero b{color:var(--text)}
 .fk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;padding-bottom:30px}
 @media(max-width:720px){.fk-grid{grid-template-columns:1fr}}
-.fk-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.fk-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px;
+  transition:border-color .15s,opacity .15s}
+/* dustugu saldirilar one cikar, kalanlar soluk durur -- ama icerik hep okunur:
+   bir farkindalik aracinda korunma bilgisini kilitlemek ters teper. */
+.fk-card.fk-dustu{border-color:#3a2626;border-left:3px solid #ff6b6b;padding-left:19px}
+.fk-card.fk-bekliyor{opacity:.72}
+.fk-card.fk-bekliyor:hover{opacity:1}
 .fk-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
 .fk-ikon{font-size:30px;line-height:1}
 .fk-top h3{font-size:17px;font-weight:600}
@@ -192,8 +204,32 @@ a{color:inherit;text-decoration:none}
 .fk-card p{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.55}
 .fk-kurban b{color:#e8a0a0}
 .fk-korunma b{color:#58b982}
+.fk-nerede{font-size:12px;color:var(--faint);margin-top:10px;padding-top:9px;border-top:1px solid var(--border)}
 .fk-not{color:var(--faint);font-size:13px;padding:8px 0 50px}
 .fk-not a{color:var(--green-soft)}
+
+/* kart rozeti: dustun / karsilasmadin */
+.fk-rozet{margin-left:auto;flex-shrink:0;font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.07em;padding:3px 9px;border-radius:6px;white-space:nowrap}
+.fk-rozet.var{color:#ff9d9d;background:#2a1414;border:1px solid #3a1f1f}
+.fk-rozet.yok{color:var(--faint);background:rgba(255,255,255,.04);border:1px solid var(--border)}
+
+/* ---- ilerleme panosu ---- */
+.fk-pano{background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  padding:22px 24px;margin-bottom:30px}
+.fk-pano-ust{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.fk-sayi{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--muted);line-height:1.2}
+.fk-sayi strong{font-size:34px;font-weight:700;color:var(--green-soft);letter-spacing:-0.02em}
+.fk-pano-alt{font-size:14px;color:var(--muted);margin-top:6px}
+.fk-sifirla{background:transparent;border:1px solid var(--border);color:var(--muted);
+  padding:8px 14px;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit;transition:border-color .15s,color .15s}
+.fk-sifirla:hover{border-color:var(--border-hover);color:var(--text)}
+.fk-bar{height:7px;background:var(--bg);border:1px solid var(--border);border-radius:99px;
+  overflow:hidden;margin-top:18px}
+.fk-bar-dolu{height:100%;background:linear-gradient(90deg,var(--green-deep),var(--green-soft));
+  border-radius:99px;transition:width .45s ease-out}
+.fk-ipucu{font-size:13px;color:var(--faint);margin-top:14px}
+.fk-ipucu b{color:var(--muted)}
 
 /* ---- karsilama (intro) penceresi ---- */
 .intro-bg{position:fixed;inset:0;background:rgba(5,8,7,.8);z-index:200;display:flex;

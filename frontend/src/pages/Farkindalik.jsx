@@ -1,17 +1,15 @@
 import { Link } from "react-router-dom"
-
-const ZAFIYETLER = [
-  { ikon: "🔍", ad: "Reflected XSS", tur: "XSS", kurban: "Hazırlanmış bir arama linkine tıklarsın; tarayıcında saldırganın kodu çalışır.", korunma: "Siteler kullanıcı girdisini ekrana basmadan önce escape etmeli." },
-  { ikon: "💬", ad: "Stored XSS", tur: "XSS", kurban: "Bir yorumu okursun; içine gizlenmiş kod oturum çerezini çalar.", korunma: "Kullanıcı içeriği gösterilmeden temizlenmeli/escape edilmeli." },
-  { ikon: "🔗", ad: "DOM-based XSS", tur: "XSS", kurban: "Bir davet linkine tıklarsın; kod tamamen tarayıcında çalışır, sunucu hiç görmez.", korunma: "URL'den okunan veri innerHTML'e değil, güvenli yöntemle basılmalı." },
-  { ikon: "🪤", ad: "Clickjacking", tur: "Arayüz tuzağı", kurban: "'Ödülü al' butonuna tıkladığını sanırsın; aslında görünmez bir butonla hesabını silersin.", korunma: "Sayfalar iframe'e girmekten men edilmeli (X-Frame-Options)." },
-  { ikon: "🎭", ad: "CSRF", tur: "İstek sahteciliği", kurban: "Sadece bir haberi okursun; haberin olmadan hesabının e-postası değişir.", korunma: "İşlemler CSRF token ile doğrulanmalı; GET ile durum değiştirilmemeli." },
-  { ikon: "↪️", ad: "Open Redirect", tur: "Phishing", kurban: "Güvenilir görünen bir linke tıklarsın; sahte bir siteye yönlendirilirsin.", korunma: "Yönlendirme hedefi doğrulanmalı (yalnızca site-içi adresler)." },
-  { ikon: "🗂️", ad: "Reverse Tabnabbing", tur: "Phishing", kurban: "Yeni sekmede bir şey açarsın; arkadaki sekmen sessizce sahte girişe dönüşür.", korunma: "Dış bağlantılara rel=\"noopener\" eklenmeli." },
-  { ikon: "📢", ad: "Malvertising", tur: "Sosyal mühendislik", kurban: "İçerik sandığın bir 'reklama' tıklarsın; sahte ödeme sayfasında kartın çalınır.", korunma: "Reklamlar açıkça etiketlenmeli ve kaynakları denetlenmeli." },
-]
+import { SALDIRILAR, TOPLAM, useIlerleme, sifirla } from "../ilerleme"
 
 function Farkindalik() {
+  const gorulen = useIlerleme()
+  const sayi = gorulen.length
+  const yuzde = Math.round((sayi / TOPLAM) * 100)
+  const bitti = sayi === TOPLAM
+
+  // Henuz dusmedigi saldirilardan birine yon gostermek icin.
+  const kalanlar = SALDIRILAR.filter((z) => !gorulen.includes(z.id))
+
   return (
     <div className="wrap">
       <section className="fk-hero">
@@ -25,26 +23,70 @@ function Farkindalik() {
         </p>
       </section>
 
-      <div className="sec-label"><span>Kurban Olabileceğin 8 Saldırı</span><div className="line"></div></div>
+      {/* ---- ilerleme panosu ---- */}
+      <section className="fk-pano">
+        <div className="fk-pano-ust">
+          <div>
+            <div className="fk-sayi">
+              <strong>{sayi}</strong> / {TOPLAM}
+            </div>
+            <p className="fk-pano-alt">
+              {sayi === 0
+                ? "Henüz hiçbir saldırıya düşmedin. Sitede gezinmeye başla."
+                : bitti
+                  ? "Sekizinin de kurbanı oldun — artık hepsini içeriden biliyorsun."
+                  : `${sayi} saldırının kurbanı oldun, ${TOPLAM - sayi} tanesi seni bekliyor.`}
+            </p>
+          </div>
+          {sayi > 0 && (
+            <button className="fk-sifirla" onClick={sifirla}>
+              Panoyu sıfırla
+            </button>
+          )}
+        </div>
+
+        <div className="fk-bar" role="progressbar" aria-valuenow={sayi} aria-valuemin={0} aria-valuemax={TOPLAM}>
+          <div className="fk-bar-dolu" style={{ width: `${yuzde}%` }} />
+        </div>
+
+        {!bitti && kalanlar.length > 0 && (
+          <p className="fk-ipucu">
+            Sıradaki ipucu: <b>{kalanlar[0].ad}</b> tuzağı <b>{kalanlar[0].nerede.toLowerCase()}</b> tarafında saklı.
+          </p>
+        )}
+      </section>
+
+      <div className="sec-label">
+        <span>Kurban Olabileceğin {TOPLAM} Saldırı</span>
+        <div className="line"></div>
+      </div>
 
       <div className="fk-grid">
-        {ZAFIYETLER.map((z) => (
-          <div className="fk-card" key={z.ad}>
-            <div className="fk-top">
-              <span className="fk-ikon">{z.ikon}</span>
-              <div>
-                <h3>{z.ad}</h3>
-                <span className="fk-tur">{z.tur}</span>
+        {SALDIRILAR.map((z) => {
+          const dustu = gorulen.includes(z.id)
+          return (
+            <div className={`fk-card ${dustu ? "fk-dustu" : "fk-bekliyor"}`} key={z.id}>
+              <div className="fk-top">
+                <span className="fk-ikon">{z.ikon}</span>
+                <div>
+                  <h3>{z.ad}</h3>
+                  <span className="fk-tur">{z.tur}</span>
+                </div>
+                <span className={`fk-rozet ${dustu ? "var" : "yok"}`}>
+                  {dustu ? "✓ düştün" : "karşılaşmadın"}
+                </span>
               </div>
+              <p className="fk-kurban"><b>Nasıl kurban olursun:</b> {z.kurban}</p>
+              <p className="fk-korunma"><b>Nasıl korunursun:</b> {z.korunma}</p>
+              <p className="fk-nerede">Tuzağın yeri: {z.nerede}</p>
             </div>
-            <p className="fk-kurban"><b>Nasıl kurban olursun:</b> {z.kurban}</p>
-            <p className="fk-korunma"><b>Nasıl korunursun:</b> {z.korunma}</p>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <p className="fk-not">
         Tüm saldırılar bu sitede <b>izole ve zararsızdır</b>; yalnızca farkındalık amaçlıdır.
+        İlerlemen yalnızca kendi tarayıcında tutulur, sunucuya gönderilmez.
         Sitede gezinmeye <Link to="/">buradan başlayabilirsin</Link>.
       </p>
     </div>

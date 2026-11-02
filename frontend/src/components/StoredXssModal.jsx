@@ -1,7 +1,12 @@
+import { useEffect } from "react"
+import { isaretle } from "../ilerleme"
+
 // Stored XSS farkindalik modali (tasarim). Kurban bir yorumdaki gizli kod
 // calisinca gosterilir; saldirganin okudugu oturum cerezini ekranda gosterir.
 // Not: csrf-* stillerini paylasiyor (ayni kirmizi ders-modali gorunumu).
 function StoredXssModal({ cookie, kotuYorum, onClose }) {
+  useEffect(() => { isaretle("stored-xss") }, [])
+
   return (
     <>
       <div className="csrf-flash" />
@@ -52,11 +57,14 @@ function StoredXssModal({ cookie, kotuYorum, onClose }) {
 
           <h3>Nasıl korunulur?</h3>
           <p>
-            Kullanıcı içeriği ekrana basılmadan önce <b>temizlenmeli/escape
-            edilmeli</b>; güvenli olmayan girdiyi ham HTML olarak basmak
-            (<code>dangerouslySetInnerHTML</code>) için kullanmak çok tehlikelidir.
+            Kullanıcı içeriği ekrana basılmadan önce <b>temizlenmeli</b>; güvenli
+            olmayan girdiyi ham HTML olarak basmak
+            (<code>dangerouslySetInnerHTML</code>) çok tehlikelidir.
             Ayrıca oturum çerezleri <code>HttpOnly</code> olsaydı JavaScript onları
-            hiç okuyamazdı. (Güvenli mod açıkken içerik escape ediliyor.)
+            hiç okuyamazdı. (Güvenli mod açıkken sunucu yorumları{" "}
+            <b>beyaz-liste</b> ile temizliyor: <code>&lt;b&gt;</code> ve{" "}
+            <code>&lt;a&gt;</code> gibi zararsız etiketler kalıyor,{" "}
+            <code>&lt;img onerror=...&gt;</code> gibi her şey düşüyor.)
           </p>
 
           <button onClick={onClose}>Anladım, kapat</button>

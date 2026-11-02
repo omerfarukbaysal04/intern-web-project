@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from app.data.posts import POSTS
 import html
+import re
+import secrets
 from app.config import SAFE_MODE
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
@@ -10,6 +12,7 @@ from fastapi import Form
 from fastapi.responses import RedirectResponse
 from app.data.users import USERS
 from app.data.comments import yorumlar, yorum_ekle
+from app.sanitize import temizle
 
 
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent/"templates"))
@@ -20,6 +23,38 @@ def kullanici_oturum(request: Request):
      if kullanici and kullanici in USERS:
           return kullanici
      return None
+
+
+# --- CSRF TOKEN (SAFE_MODE savunmasi) -----------------------------------
+# Token kullanici kaydinda (sunucuda) tutulur; forma gizli alan olarak basilir.
+# Saldirgan baska bir sayfadan form gonderebilir ama bu degeri OKUYAMAZ
+# (same-origin policy), bu yuzden dogrulama patlar.
+def csrf_token_al(kullanici: str) -> str:
+     """Kullanicinin CSRF token'ini dondurur; yoksa uretir."""
+     u = USERS.get(kullanici)
+     if not u:
+          return ""
+     if not u.get("csrf_token"):
+          u["csrf_token"] = secrets.token_urlsafe(32)
+     return u["csrf_token"]
+
+
+def csrf_gecerli(kullanici: str, token: str) -> bool:
+     """SAFE_MODE kapaliyken dogrulama yapilmaz (zafiyet bilerek acik)."""
+     if not SAFE_MODE:
+          return True
+     beklenen = USERS.get(kullanici, {}).get("csrf_token") or ""
+     return bool(token) and secrets.compare_digest(token, beklenen)
+
+
+def csrf_engellendi(request: Request, islem: str):
+     """Token dogrulamasi basarisiz: islemi yapmadan farkindalik sayfasi don."""
+     return templates.TemplateResponse(
+          request,
+          "csrf_engellendi.html",
+          {"islem": islem},
+          status_code=403,
+     )
 
 @app.get("/api/posts")
 def get_posts():
@@ -32,13 +67,26 @@ def get_post(slug: str):
             return post
     raise HTTPException(status_code=404, detail="Yazı bulunamadı")
 
+# Arama girdisinde GERCEKTEN calisabilir bir payload var mi?
+# Ilk surumde sadece "<" aranıyordu; bu, zararsiz bir "2 < 3" aramasinda da
+# "hacklendin" ekranini aciyordu. Artik calistirilabilir kaliplari ariyoruz.
+XSS_KALIP = re.compile(
+    # 1) kod calistirmakta kullanilan etiketler
+    r"<\s*(script|img|svg|iframe|body|video|audio|object|embed|details)\b"
+    # 2) herhangi bir etiket + olay niteligi (onerror=, onload=, onclick=...)
+    r"|<\s*[a-z][a-z0-9]*[^>]*\son[a-z]+\s*="
+    # 3) javascript: semasi
+    r"|javascript\s*:",
+    re.IGNORECASE,
+)
+
+
 @app.get("/search", response_class=HTMLResponse)
 def search_page(request: Request, q: str=""):
     goster = html.escape(q) if SAFE_MODE else q
-    saldiri_var = ("<" in q) and (not SAFE_MODE)
+    saldiri_var = bool(XSS_KALIP.search(q)) and (not SAFE_MODE)
     sonuclar = [p for p in POSTS if q.lower() in (p["title"] + p["excerpt"] + p["category"]).lower()]
-    return templates.TemplateResponse("search.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "search.html", {
         "goster": goster,
         "saldiri": saldiri_var,
         "sonuclar": sonuclar
@@ -49,46 +97,59 @@ def hesap(request: Request):
     kullanici=kullanici_oturum(request)
     if not kullanici:
          return RedirectResponse(url="/giris",status_code=303)
-    resp = templates.TemplateResponse("hesap.html",{
-        "request":request,
+    resp = templates.TemplateResponse(request, "hesap.html",{
         "kullanici": kullanici,
         "user": USERS[kullanici],
+        "csrf_token": csrf_token_al(kullanici) if SAFE_MODE else "",
         })
     if SAFE_MODE:
+        # CLICKJACKING SAVUNMASI: sayfa hicbir iframe'e girmesin.
+        # X-Frame-Options eski tarayicilar icin, frame-ancestors modern karsiligi.
         resp.headers["X-Frame-Options"]="DENY"
+        resp.headers["Content-Security-Policy"]="frame-ancestors 'none'"
     return resp
 
 @app.get("/giris",response_class=HTMLResponse)
 def giris(request : Request):
-    return templates.TemplateResponse("giris.html",{"request": request})
+    return templates.TemplateResponse(request, "giris.html")
 
 @app.post("/giris")
 def giris_yap(request: Request, kullanici: str=Form(),parola: str=Form()):
     u = USERS.get(kullanici)
     if u and u["parola"]==parola:
         resp=RedirectResponse(url="/hesap",status_code=303)
-        resp.set_cookie("oturum",kullanici)
+        # DIKKAT (demo): cerez bilerek imzasiz ve httponly DEGIL -- XSS ile
+        # calinabildigini gosterebilmek icin. samesite="lax" ise tarayicinin
+        # varsayilanini acikca yaziyor: saldirgan sayfalari bu demoda ayni
+        # origin'de barindirmak zorunda olmamizin nedeni de bu (bkz. README).
+        resp.set_cookie("oturum",kullanici,samesite="lax")
+        csrf_token_al(kullanici)   # oturumla birlikte token da hazirlanir
         return resp
     return templates.TemplateResponse(
+        request,
         "giris.html",
-        {"request": request,"hata":"Kullanıcı adı veya parola hatalı"},
+        {"hata":"Kullanıcı adı veya parola hatalı"},
     )
 
 @app.post("/hesap/email")
-def email_guncelle(request:Request, email:str=Form()):
+def email_guncelle(request:Request, email:str=Form(), csrf_token:str=Form(default="")):
     kullanici=kullanici_oturum(request)
     if not kullanici:
         return RedirectResponse(url="/giris",status_code=303)
+    if not csrf_gecerli(kullanici, csrf_token):
+        return csrf_engellendi(request, "e-posta degistirme")
     USERS[kullanici]["email"]=email
     return RedirectResponse(url="/hesap",status_code=303)
 
 @app.post("/hesap/sil")
-def hesap_sil(request:Request):
+def hesap_sil(request:Request, csrf_token:str=Form(default="")):
     kullanici=kullanici_oturum(request)
     if not kullanici:
         return RedirectResponse(url="/giris",status_code=303)
+    if not csrf_gecerli(kullanici, csrf_token):
+        return csrf_engellendi(request, "hesap silme")
     USERS.pop(kullanici,None) #kullanıcıyı sil
-    resp = templates.TemplateResponse("silindi.html", {"request":request})
+    resp = templates.TemplateResponse(request, "silindi.html")
     resp.delete_cookie("oturum")
     return resp
 
@@ -100,21 +161,25 @@ def cikis():
 
 @app.get("/saldirgan", response_class=HTMLResponse)
 def saldirgan(request:Request):
-    return templates.TemplateResponse("saldirgan.html", {"request":request})
+    return templates.TemplateResponse(request, "saldirgan.html")
 
 @app.get("/clickjack-ders", response_class=HTMLResponse)
 def clickjack_ders(request:Request):
-    return templates.TemplateResponse("clickjack_ders.html",{"request":request})
+    return templates.TemplateResponse(request, "clickjack_ders.html")
 
 @app.get("/csrf-saldirgan", response_class=HTMLResponse)
 def csrf_saldirgan(request: Request):
-    return templates.TemplateResponse("csrf_saldirgan.html",{"request":request})
+    return templates.TemplateResponse(request, "csrf_saldirgan.html")
 
 @app.get("/api/yorumlar/{slug}")
 def get_yorumlar(slug:str):
     items = yorumlar(slug)
     if SAFE_MODE:
-        items = [{**c, "metin": html.escape(c["metin"])} for c in items]
+        # STORED XSS SAVUNMASI: yorumu bastan sona escape etmek yerine beyaz-liste
+        # ile temizliyoruz (bkz. sanitize.py). Boylece <img onerror> dusuyor ama
+        # <a> linkleri kaliyor -- open redirect / tabnabbing / DOM XSS tuzaklari
+        # da kendi savunmalariyla karsilasiyor, "gizlenerek" sonmuyorlar.
+        items = [{**c, "metin": temizle(c["metin"])} for c in items]
     return {"items":items}
 
 @app.post("/api/yorum")
@@ -123,11 +188,18 @@ def post_yorum(request: Request, slug: str = Form(), metin: str = Form(), resim:
     yorum_ekle(slug,yazar,metin,resim)
     return {"ok":True}
 
+# --- CSRF: durumu GET ile degistiren zafiyetli endpoint ---
+# Yorumdaki sahte "resim" URL'si tam burayi cagiriyor.
 @app.get("/hesap/email-degistir")
 def email_degistir_get(request:Request, email: str=""):
     kullanici= kullanici_oturum(request)
     if not kullanici:
         return RedirectResponse(url="/giris",status_code=303)
+    if SAFE_MODE:
+        # CSRF SAVUNMASI (1): GET guvenli bir metottur, durum degistirmemeli.
+        # Tarayici <img src> gibi istekleri kullanicinin onayi olmadan atar;
+        # bu yuzden boyle bir islem GET ile hic sunulmamali.
+        return {"ok": False, "neden": "GET ile durum degistirilemez (CSRF savunmasi)"}
     if email:
         USERS[kullanici]["email"] = email
         USERS[kullanici]["csrf_uyari"] = True
@@ -156,18 +228,18 @@ def git(url: str = "/"):
 
 @app.get("/sahte-giris", response_class=HTMLResponse)
 def sahte_giris(request: Request):
-    return templates.TemplateResponse("sahte_giris.html", {"request": request})
+    return templates.TemplateResponse(request, "sahte_giris.html")
 
 
 # --- REVERSE TABNABBING ---
 @app.get("/tab-saldirgan", response_class=HTMLResponse)
 def tab_saldirgan(request: Request):
-    return templates.TemplateResponse("tab_saldirgan.html", {"request": request})
+    return templates.TemplateResponse(request, "tab_saldirgan.html")
 
 
 @app.get("/tab-sahte-giris", response_class=HTMLResponse)
 def tab_sahte_giris(request: Request):
-    return templates.TemplateResponse("tab_sahte_giris.html", {"request": request})
+    return templates.TemplateResponse(request, "tab_sahte_giris.html")
 
 
 # React'in SAFE_MODE durumunu ogrenebilmesi icin (DOM XSS savunmasi client tarafinda)
@@ -179,4 +251,4 @@ def api_safe_mode():
 # --- MALVERTISING: sahte odeme (phishing) sayfasi ---
 @app.get("/premium-odeme", response_class=HTMLResponse)
 def premium_odeme(request: Request):
-    return templates.TemplateResponse("sahte_odeme.html", {"request": request})
+    return templates.TemplateResponse(request, "sahte_odeme.html")
