@@ -11,6 +11,8 @@ yalnızca gezinirken nasıl kurban olabileceğini göstermek ve öğretmek.
 > ⚠️ Tüm zafiyetler **bilerek, izole ve zararsız** biçimde, yalnızca eğitim/farkındalık
 > amacıyla eklenmiştir. Hiçbir gerçek veri çalınmaz veya dışarı gönderilmez.
 
+**Ayrıca ilgili linkten proje tanıtım videosuna erişilebilir**: https://drive.google.com/file/d/1IoW48VgkpE9aRFCIPgjCMVg1JQaOE69y/view?usp=sharing
+
 ## İçerdiği 8 Saldırı
 
 | # | Saldırı | Kurban nasıl düşer | Tuzağın yeri |
