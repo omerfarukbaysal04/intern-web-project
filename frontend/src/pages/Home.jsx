@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import IntroModal from '../components/IntroModal'
+import HaberKarti from '../components/HaberKarti'
 
 function Home(){
     const [posts, setPosts] = useState([])
@@ -38,24 +38,7 @@ function Home(){
         <div className="sec-label"><span>Son Yazılar</span><div className="line"></div></div>
 
         <div className="card-grid">
-          {posts.map((post =>
-            <Link key={post.slug}  to={`/post/${post.slug}`}  className="card">
-              <div className={`thumb ${post.tone}`}>
-                <span className="chip">{post.category}</span>
-              </div>
-              <div className="cbody">
-                <h3>{post.title}</h3>   
-                <p>{post.excerpt}</p>
-                <div className="meta">
-                  <span>{post.author}</span>
-                  <span>·</span>
-                  <span className="mono">{post.date}</span>
-                  <span>·</span>
-                  <span className="mono">{post.read_minutes} dk</span>
-                </div>
-              </div>
-            </Link>
-           ))}
+          {posts.map((post) => <HaberKarti key={post.slug} post={post} />)}
         </div>
       </div>
     </>

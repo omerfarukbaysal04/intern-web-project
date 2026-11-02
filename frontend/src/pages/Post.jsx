@@ -68,16 +68,31 @@ function Post(){
       <Link to="/" className="back">← Ana sayfa</Link>
       <h1>{post.title}</h1>
       <div className="byline">
-        <span className="chip">{post.category}</span>
+        <Link to={`/kategori/${post.kategori_slug}`} className="chip">{post.category}</Link>
         <span>{post.author}</span>
         <span>·</span>
         <span className="mono">{post.date}</span>
         <span>·</span>
         <span className="mono">{post.read_minutes} dk</span>
       </div>
+      {post.gorsel && (
+        <figure className="hero-gorsel">
+          <img src={post.gorsel.dosya} alt={post.gorsel.alt} />
+          <figcaption>{post.gorsel.atif}</figcaption>
+        </figure>
+      )}
       <div className="content">
         {post.body.map((p, i) => <p key={i}>{p}</p>)}
       </div>
+      {/* Icerik gercek haberlerden derlendi; hangisinden geldigi acikca yazili. */}
+      {post.kaynak && (
+        <p className="kaynak">
+          Kaynak:{" "}
+          <a href={post.kaynak.url} target="_blank" rel="noopener noreferrer">
+            {post.kaynak.ad}
+          </a>
+        </p>
+      )}
           <section className="comments">
       <h2>Yorumlar ({yorumlar.length})</h2>
 

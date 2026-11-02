@@ -1,15 +1,25 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { TOPLAM, useIlerleme } from '../ilerleme'
+
+// Menudeki kategoriler. posts.py'deki KATEGORILER ile ayni slug'lari kullanir.
+const KATEGORILER = [
+  { slug: 'yapay-zeka', ad: 'Yapay Zeka' },
+  { slug: 'guvenlik', ad: 'Güvenlik' },
+  { slug: 'enerji', ad: 'Enerji' },
+]
 
 function getOturum(){
   const m= document.cookie.match(/(?:^|;\s*)oturum=([^;]+)/)
-  return m ? decodeURIComponent(m[1]):null  
+  return m ? decodeURIComponent(m[1]):null
 }
 
 
 function Navbar() {
   const oturum =getOturum()
   const gorulen = useIlerleme()
+  const konum = useLocation()
+  // "Gundem" yalnizca ana sayfadayken isaretli olsun (NavLink'in "end"i gibi).
+  const anaSayfada = konum.pathname === '/'
   return (
     <header className="nav-bar">
       <div className="wrap">
@@ -20,10 +30,16 @@ function Navbar() {
           </Link>
 
           <div className="nav-links">
-            <Link to="/" className="active">Gündem</Link>
-            <Link to="/">Yapay Zeka</Link>
-            <Link to="/">Güvenlik</Link>
-            <Link to="/">Enerji</Link>
+            <Link to="/" className={anaSayfada ? 'active' : undefined}>Gündem</Link>
+            {KATEGORILER.map((k) => (
+              <NavLink
+                key={k.slug}
+                to={`/kategori/${k.slug}`}
+                className={({ isActive }) => (isActive ? 'active' : undefined)}
+              >
+                {k.ad}
+              </NavLink>
+            ))}
             <Link to="/farkindalik" className="nav-fk">
               🛡 Farkındalık
               <span className="nav-fk-sayac">{gorulen.length}/{TOPLAM}</span>

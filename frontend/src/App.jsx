@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Post from './pages/Post'
 import Davet from './pages/Davet'
+import Kategori from './pages/Kategori'
 import Farkindalik from './pages/Farkindalik'
 import AdPopup from './components/AdPopup'
 import ReklamKutusu from './components/ReklamKutusu'
@@ -35,6 +36,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/post/:slug' element={<Post />}/>
+        <Route path="/kategori/:slug" element={<Kategori />} />
         <Route path="/davet" element={<Davet />} />
         <Route path="/farkindalik" element={<Farkindalik />} />
       </Routes>

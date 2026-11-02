@@ -28,6 +28,36 @@ Tuzakların çoğu `backend/app/data/comments.py` içine **önceden ekilmiş yor
 olarak duruyor; yani saldırılar kullanıcı hiçbir şey yazmadan, sadece haberi okurken
 kendiliğinden tetikleniyor.
 
+## İçerik ve Kategoriler
+
+Site dokuz haber taşıyor; **Yapay Zeka**, **Güvenlik** ve **Enerji** kategorilerinin
+her birinde üçer yazı var. Navbar'daki kategori bağlantıları artık çalışıyor ve
+`/kategori/<slug>` adresine gidiyor; bulunulan kategori menüde işaretli kalıyor.
+
+İçerik uydurma değil: yazılar Ekim–Kasım 2026 tarihli **gerçek haberlerden**
+derlendi. Metinler kopyalanmadı, kendi cümlelerimizle özetlendi ve her yazının
+altında alındığı yayın kaynak bağlantısıyla birlikte duruyor
+(`posts.py` → `kaynak` alanı). Kaynaklar arasında FBI'ın siber uyarısı, Wood
+Mackenzie'nin maliyet analizi, The Hacker News, Macworld, DonanımHaber ve EPDK
+düzenlemesini aktaran haberler var. Bir haber sitesi kılığındaki demonun
+inandırıcı olması, içeriğinin de gerçek olmasına bağlı.
+
+Her yazının bir **kapak görseli** var (`posts.py` → `gorsel`). Görseller
+Wikimedia Commons'tan alındı; hepsi **kamu malı ya da CC0** olduğu için atıf
+zorunlu değil, yine de her haberin altında künyesi yazılı. Dosyalar
+`frontend/public/haber/` içinde yerel duruyor — dışarıya bağlantı yok, site
+internetsiz de aynı görünüyor. Görseli olmayan bir yazı eklenirse kart, eski
+davranışa düşüp kategori rengini gösterir.
+
+Kart kapak renkleri (`tone`) kategoriye göre sabit: görselin yüklenemediği
+durumda bile aynı kategorinin yazıları birbirini tutuyor.
+
+**Tuzaklar konularıyla eşleşiyor.** Kripto hırsızlığı haberinin altında sahte bir
+"güvenlik rehberi" bağlantısı (open redirect), hesap güvenliği haberinde hesap
+ayarıyla oynayan bir "görsel" (CSRF), performans haberinde "hız testi" bağlantısı
+(tabnabbing) duruyor. Gerçek kimlik avı da böyle çalışır: bağlam ne kadar doğalsa
+tuzak o kadar görünmez olur.
+
 ## İlerleme Panosu
 
 Ziyaretçi saldırılara rastgele sırayla düştüğü için hangilerini gördüğünü takip
@@ -142,14 +172,87 @@ Tarayıcı: <http://localhost:5173>
 
 `backend/app/config.py` → `SAFE_MODE = True` / `False` (kaydedince otomatik yeniden yüklenir).
 
-### Demo gezinti sırası
+## Sekiz Saldırı Nasıl Test Edilir
 
-1. `omerfaruk / 1234` ile giriş yap.
-2. Ana sayfadaki haberleri sırayla aç — her birinde ekili bir tuzak var.
-3. Arama kutusuna bir XSS payload'ı yaz (örn. `<script>caught()</script>`).
-4. 8 saniye sonra çıkan çekiliş reklamına tıkla (clickjacking).
-5. Farkındalık sayfasından ilerlemene bak; kalanlar için oradaki ipucunu takip et.
-6. `SAFE_MODE = True` yap ve aynı adımları tekrarla: hiçbiri çalışmayacak.
+Aşağıdaki adımlar `SAFE_MODE = False` iken geçerlidir. Her saldırıdan sonra
+farkındalık ekranı açılır ve sayaç bir artar; sırayla gidersen 8/8'e ulaşırsın.
+
+**Önce:** `omerfaruk / 1234` ile giriş yap. Dört saldırı (Stored XSS, Clickjacking,
+CSRF, Reverse Tabnabbing) giriş yapılmış bir oturum gerektirir.
+
+### 1. Reflected XSS — arama kutusu
+
+Üstteki arama kutusuna `<script>caught()</script>` yazıp Enter'a bas.
+Sonuç sayfası açılır açılmaz kırmızı flaş ve *"Az önce hacklendin!"* ekranı gelir.
+Girdin sunucu tarafından hiç temizlenmeden sayfaya basıldığı için çalıştı.
+`2 < 3` gibi masum bir arama ekranı **açmaz**.
+
+### 2. Stored XSS — *"Chainalysis, Yapay Zekâ Ajanlarıyla Yapılan Sızmayı Doğruladı"*
+
+Haberi aç ve bekle. Yorumlardan biri masum görünür ama sonunda gizli bir
+`<img onerror=...>` taşır; yaklaşık 2,5 saniye sonra modal açılır ve **senin
+oturum çerezini** ekranda gösterir. Hiçbir şeye tıklamadın, sadece okudun.
+
+### 3. DOM-based XSS — *"Açık Kaynak Dünya Modeli Tek Ekran Kartında Çalışıyor"*
+
+Haberi aç, yorumlardaki **"davet linkin hazır 🎉"** bağlantısına tıkla.
+`/davet` sayfasında modal açılır. Buradaki fark: zararlı kod linkin `#` kısmındaydı,
+yani **sunucuya hiç gitmedi** — saldırı tamamen tarayıcıda oldu, sunucu logları görmez.
+
+### 4. Clickjacking — çekiliş reklamı
+
+Giriş yaptıktan sonra ~8 saniye bekle; sağ altta *"Bugünün şanslısı sizsiniz"*
+kutusu çıkar. **"Hemen Katıl"**a, açılan sayfada da **"Ödülümü Al 🎁"**a tıkla.
+Butonun üstünde görünmez bir iframe vardır: aslında kendi hesap sayfandaki
+*"Hesabımı Sil"* butonuna basmış olursun ve hesabın silinir.
+
+> Hesabın gerçekten silinir (veri bellekte tutulur). Geri getirmek için
+> backend'i yeniden başlatman yeterli.
+
+### 5. CSRF — *"Parolasız Döneme Geçiş: Passkey Varsayılan Oluyor"*
+
+Giriş yapmışken haberi aç ve bekle. Yorumlardan birindeki "görsel" aslında görsel
+değil, bir **işlem adresidir**; tarayıcın onu yüklerken giriş çerezini otomatik
+ekler. ~1,5 saniye sonra modal açılır. Doğrulamak için **Hesabım** sayfasına git:
+e-postan `saldirgan@evil.com` olmuştur.
+
+### 6. Open Redirect — *"FBI: Binance'ten Çalınan 6 Milyar Dolar..."*
+
+Haberi aç, yorumdaki **"teknopanorama.com/guvenlik-rehberi"** bağlantısına tıkla.
+Link metni güvenilir görünür ama adresi `/git?url=...` üzerinden seni başka bir
+siteye atar. Sahte giriş sayfasına düşersin — **adres çubuğuna bak**, artık
+`127.0.0.1:8000` üzerindesin. "Gerçek siteye dön" bağlantısı seni geri getirir.
+
+### 7. Reverse Tabnabbing — *"Apple, M6'lı iMac ile Cihaz Üstü Yapay Zekâda İddialı"*
+
+Haberi aç, yorumdaki **"speedtest-pro.com"** bağlantısına tıkla; yeni sekmede bir
+"hız testi" açılır. Beş saniye sonra ipucu çıkar. **Eski sekmene geri dön:**
+Teknopanorama sekmesi sessizce *"Oturumunuz sona erdi, tekrar giriş yapın"*
+ekranına dönüşmüştür. Yeni sekme, `window.opener` ile eski sekmeyi ele geçirdi.
+
+### 8. Malvertising — sayfa içi reklam kutusu
+
+Ana sayfada aşağı in; içerik kartlarının arasındaki kutu birkaç saniyede bir döner.
+**"Teknopanorama Premium — ilk ay ücretsiz!"** öğesine tıkla. Sahte bir ödeme
+sayfasına düşersin. Dikkat et: güvensiz modda o kutuda **"Reklam" etiketi yoktur**,
+yani sitenin kendi içeriğinden ayırt edilemez.
+
+### Savunmaları görmek
+
+`backend/app/config.py` → `SAFE_MODE = True` yap (`--reload` ile çalışıyorsa
+kendi kendine yeniden başlar) ve **tarayıcıda sayfayı yenile** — React güvenli mod
+durumunu açılışta bir kez sorar. Sonra aynı sekiz adımı tekrarla:
+
+| Adım | Güvenli modda ne olur |
+|------|------------------------|
+| 1 | Payload metin olarak görünür, çalışmaz |
+| 2 | Yorumdaki `<img onerror>` temizlenir, modal hiç açılmaz |
+| 3 | Davet linki durur ama isim escape edilerek basılır |
+| 4 | `/hesap` iframe'e girmeyi reddeder, buton hiçbir şey yapmaz |
+| 5 | GET ile e-posta değişmez; sahte form 403 + ders sayfası alır |
+| 6 | `/git` dış adresi reddeder, seni ana sayfaya götürür |
+| 7 | Linke `rel="noopener"` eklenir, eski sekme ele geçirilemez |
+| 8 | Tuzak reklam hiç gösterilmez, kalanlar "Reklam" etiketi alır |
 
 > İlerleme panosunu baştan anlatmak için Farkındalık sayfasındaki
 > **"Panoyu sıfırla"** butonunu kullan.
@@ -161,7 +264,8 @@ backend/app/
   main.py                   FastAPI uygulaması, tüm endpoint'ler
   config.py                 SAFE_MODE bayrağı
   sanitize.py               yorum HTML'i için beyaz-liste temizleyicisi (SAFE_MODE)
-  data/                     posts.py, users.py, comments.py (bellekte veri + ekili tuzaklar)
+  data/                     posts.py (9 haber + kategoriler), users.py,
+                            comments.py (yorumlar + ekili tuzaklar)
   templates/                sunucu-render'lı sayfalar + farkındalık ekranları (Jinja2)
     _ilerleme.html          ilerleme panosuna işaret bırakan ortak parça
     search.html             zafiyetli arama sayfası (reflected XSS)
@@ -174,10 +278,13 @@ backend/app/
     sahte_odeme.html        malvertising sahte ödeme sayfası
     clickjack_ders.html     clickjacking farkındalık ekranı
     csrf_engellendi.html    CSRF token doğrulaması patladığında (SAFE_MODE)
+frontend/public/
+  haber/                    haber kapak görselleri (kamu malı / CC0)
 frontend/src/
   ilerleme.js               saldırı listesi + ilerleme panosu (localStorage)
-  pages/                    Home, Post, Davet, Farkindalik
-  components/               Navbar, Footer, reklam/popup ve farkındalık modalları
+  pages/                    Home, Post, Kategori, Davet, Farkindalik
+  components/               Navbar, Footer, HaberKarti, reklam/popup ve
+                            farkındalık modalları
   index.css                 tema (koyu yeşil)
 ```
 

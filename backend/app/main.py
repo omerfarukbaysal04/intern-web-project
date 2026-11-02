@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from app.data.posts import POSTS
+from app.data.posts import POSTS, KATEGORILER, kategoriye_gore, kategori_adi
 import html
 import re
 import secrets
@@ -57,8 +57,23 @@ def csrf_engellendi(request: Request, islem: str):
      )
 
 @app.get("/api/posts")
-def get_posts():
-    return {"items" : POSTS}
+def get_posts(kategori: str = ""):
+    # kategori verilirse o kategorinin yazilari, verilmezse hepsi (Gundem)
+    items = kategoriye_gore(kategori) if kategori else POSTS
+    return {"items" : items}
+
+
+@app.get("/api/kategoriler")
+def get_kategoriler():
+    return {"items": KATEGORILER}
+
+
+@app.get("/api/kategori/{kategori_slug}")
+def get_kategori(kategori_slug: str):
+    ad = kategori_adi(kategori_slug)
+    if ad is None:
+        raise HTTPException(status_code=404, detail="Kategori bulunamadı")
+    return {"slug": kategori_slug, "ad": ad, "items": kategoriye_gore(kategori_slug)}
 
 @app.get("/api/posts/{slug}")
 def get_post(slug: str):
